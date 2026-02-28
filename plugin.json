@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/SteamClientHomebrew/Millennium/main/src/sys/plugin-schema.json",
   "name": "MLZ",
-  "common_name": "MLZ",
-  "description": "MLZ Steam Plugin!",
+  "common_name": "LuaTools",
+  "description": "MLZ Community - Professional Steam Toolkit",
   "version": "7.1",
   "include": [
     "public"

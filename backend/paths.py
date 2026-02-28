@@ -1,4 +1,4 @@
-"""Filesystem path helpers for the MLZ backend."""
+"""Filesystem path helpers for the LuaTools backend."""
 
 import os
 

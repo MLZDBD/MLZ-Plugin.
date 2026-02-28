@@ -11,10 +11,10 @@
     gamepadCSS.id = 'gamepad-navigation-styles';
     gamepadCSS.textContent = `
         .active-focus {
-            outline: 3px solid #a855f7 !important;
+            outline: 3px solid #66c0f4 !important;
             outline-offset: 2px !important;
-            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.3),
-                        0 0 12px rgba(168, 85, 247, 0.5) !important;
+            box-shadow: 0 0 0 4px rgba(102, 192, 244, 0.3),
+                        0 0 12px rgba(102, 192, 244, 0.5) !important;
             position: relative !important;
             z-index: 9999 !important;
             transition: outline 0.15s ease, box-shadow 0.15s ease !important;
@@ -22,12 +22,12 @@
 
         @keyframes gamepad-focus-pulse {
             0%, 100% {
-                box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.3),
-                            0 0 12px rgba(168, 85, 247, 0.5);
+                box-shadow: 0 0 0 4px rgba(102, 192, 244, 0.3),
+                            0 0 12px rgba(102, 192, 244, 0.5);
             }
             50% {
-                box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.5),
-                            0 0 16px rgba(168, 85, 247, 0.7);
+                box-shadow: 0 0 0 4px rgba(102, 192, 244, 0.5),
+                            0 0 16px rgba(102, 192, 244, 0.7);
             }
         }
 
@@ -37,7 +37,7 @@
 
         button.active-focus,
         a.active-focus {
-            background-color: rgba(168, 85, 247, 0.15) !important;
+            background-color: rgba(102, 192, 244, 0.15) !important;
             transform: scale(1.02);
         }
 
@@ -50,12 +50,12 @@
         input.active-focus,
         select.active-focus,
         textarea.active-focus {
-            border-color: #a855f7 !important;
-            background-color: rgba(168, 85, 247, 0.1) !important;
+            border-color: #66c0f4 !important;
+            background-color: rgba(102, 192, 244, 0.1) !important;
         }
 
         .active-focus:focus {
-            outline: 3px solid #a855f7 !important;
+            outline: 3px solid #66c0f4 !important;
         }
 
         button,
@@ -67,15 +67,15 @@
             transition: transform 0.15s ease, background-color 0.15s ease !important;
         }
 
-        .MLZ-button.active-focus,
-        .MLZ-restart-button.active-focus,
-        .MLZ-icon-button.active-focus {
+        .luatools-button.active-focus,
+        .luatools-restart-button.active-focus,
+        .luatools-icon-button.active-focus {
             transform: scale(1.05) !important;
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.2)) !important;
+            background: linear-gradient(135deg, rgba(102, 192, 244, 0.3), rgba(102, 192, 244, 0.2)) !important;
         }
 
         .btnv6_blue_hoverfade.active-focus {
-            background: linear-gradient(to right, #9333ea 5%, #7e22ce 95%) !important;
+            background: linear-gradient(to right, #47bfff 5%, #1a9fff 95%) !important;
         }
 
         .active-focus {
@@ -87,15 +87,15 @@
     // Gamepad Navigation System
     // ALL MLZ overlays that should block Steam navigation
     const OVERLAY_SELECTORS = [
-        '.MLZ-overlay',
-        '.MLZ-settings-overlay',
-        '.MLZ-fixes-results-overlay',
-        '.MLZ-loading-fixes-overlay',
-        '.MLZ-unfix-overlay',
-        '.MLZ-settings-manager-overlay',
-        '.MLZ-alert-overlay',
-        '.MLZ-confirm-overlay',
-        '.MLZ-loadedapps-overlay'
+        '.luatools-overlay',
+        '.luatools-settings-overlay',
+        '.luatools-fixes-results-overlay',
+        '.luatools-loading-fixes-overlay',
+        '.luatools-unfix-overlay',
+        '.luatools-settings-manager-overlay',
+        '.luatools-alert-overlay',
+        '.luatools-confirm-overlay',
+        '.luatools-loadedapps-overlay'
     ];
     const OVERLAY_SELECTOR_STRING = OVERLAY_SELECTORS.join(', ');
 
@@ -608,7 +608,7 @@
     function backendLog(message) {
         try {
             if (typeof Millennium !== 'undefined' && typeof Millennium.callServerMethod === 'function') {
-                Millennium.callServerMethod('MLZ', 'Logger.log', {
+                Millennium.callServerMethod('luatools', 'Logger.log', {
                     message: String(message)
                 });
             }
@@ -637,7 +637,7 @@
         if (typeof Millennium === 'undefined' || typeof Millennium.callServerMethod !== 'function') {
             return Promise.resolve({});
         }
-        return Millennium.callServerMethod('MLZ', 'GetGamesDatabase', {
+        return Millennium.callServerMethod('luatools', 'GetGamesDatabase', {
             contentScriptQuery: ''
         })
             .then(function (res) {
@@ -660,7 +660,7 @@
         if (typeof Millennium === 'undefined' || typeof Millennium.callServerMethod !== 'function') {
             return Promise.resolve(null);
         }
-        return Millennium.callServerMethod('MLZ', 'CheckForFixes', {
+        return Millennium.callServerMethod('luatools', 'CheckForFixes', {
             appid: appid,
             contentScriptQuery: ''
         })
@@ -740,14 +740,14 @@
             bgHover: 'rgba(7, 7, 7, 0.86)',
             bgContainer: 'rgba(11,20,30,0.6)',
             bgContainerGradient: 'rgba(11, 20, 30, 0.85), #0b141e',
-            accent: '#a855f7',
+            accent: '#66c0f4',
             accentLight: '#a4d7f5',
             accentDark: '#4a9ece',
             border: 'rgba(102,192,244,0.3)',
             borderHover: 'rgba(102,192,244,0.8)',
             text: '#fff',
             textSecondary: '#c7d5e0',
-            gradient: 'linear-gradient(135deg, #a855f7 0%, #a4d7f5 100%)',
+            gradient: 'linear-gradient(135deg, #66c0f4 0%, #a4d7f5 100%)',
             gradientLight: 'linear-gradient(135deg, #a4d7f5 0%, #7dd4ff 100%)',
             shadow: 'rgba(102,192,244,0.4)',
             shadowHover: 'rgba(102,192,244,0.6)',
@@ -823,7 +823,7 @@
         if (typeof Millennium === 'undefined' || typeof Millennium.callServerMethod !== 'function') {
             return Promise.resolve(null);
         }
-        return Millennium.callServerMethod('MLZ', 'GetThemes', {
+        return Millennium.callServerMethod('luatools', 'GetThemes', {
             contentScriptQuery: ''
         }).then(function (res) {
             try {
@@ -911,23 +911,23 @@
     function generateThemeStyles(theme) {
         return `
             /* Force overlay backdrops to follow the active theme (overrides inline styles) */
-            .MLZ-settings-overlay,
-            .MLZ-overlay,
-            .MLZ-fixes-results-overlay,
-            .MLZ-loading-fixes-overlay,
-            .MLZ-unfix-overlay,
-            .MLZ-settings-manager-overlay,
-            .MLZ-loadedapps-overlay {
+            .luatools-settings-overlay,
+            .luatools-overlay,
+            .luatools-fixes-results-overlay,
+            .luatools-loading-fixes-overlay,
+            .luatools-unfix-overlay,
+            .luatools-settings-manager-overlay,
+            .luatools-loadedapps-overlay {
                 background: rgba(${theme.rgbString}, 0.12) !important;
                 backdrop-filter: blur(8px) !important;
             }
 
             /* Prefer overlay-scoped select rules to override theme CSS files */
-            .MLZ-settings-overlay select,
-            .MLZ-settings-manager-overlay select,
-            .MLZ-overlay select,
-            .MLZ-fixes-results-overlay select,
-            .MLZ-loadedapps-overlay select {
+            .luatools-settings-overlay select,
+            .luatools-settings-manager-overlay select,
+            .luatools-overlay select,
+            .luatools-fixes-results-overlay select,
+            .luatools-loadedapps-overlay select {
                 background-color: ${theme.bgTertiary} !important;
                 color: ${theme.text} !important;
                 border: 1px solid ${theme.border} !important;
@@ -935,39 +935,39 @@
                 padding: 6px 8px !important;
                 font-size: 14px !important;
             }
-            .MLZ-settings-overlay select option,
-            .MLZ-settings-manager-overlay select option,
-            .MLZ-overlay select option,
-            .MLZ-fixes-results-overlay select option,
-            .MLZ-loadedapps-overlay select option {
+            .luatools-settings-overlay select option,
+            .luatools-settings-manager-overlay select option,
+            .luatools-overlay select option,
+            .luatools-fixes-results-overlay select option,
+            .luatools-loadedapps-overlay select option {
                 background-color: ${theme.bgPrimary} !important;
                 color: ${theme.text} !important;
             }
-            .MLZ-settings-overlay select option:checked,
-            .MLZ-settings-manager-overlay select option:checked,
-            .MLZ-overlay select option:checked,
-            .MLZ-fixes-results-overlay select option:checked,
-            .MLZ-loadedapps-overlay select option:checked {
+            .luatools-settings-overlay select option:checked,
+            .luatools-settings-manager-overlay select option:checked,
+            .luatools-overlay select option:checked,
+            .luatools-fixes-results-overlay select option:checked,
+            .luatools-loadedapps-overlay select option:checked {
                 background: ${theme.accent} !important;
                 color: ${theme.text} !important;
             }
-            .MLZ-settings-overlay select:hover,
-            .MLZ-settings-manager-overlay select:hover,
-            .MLZ-overlay select:hover,
-            .MLZ-fixes-results-overlay select:hover,
-            .MLZ-loadedapps-overlay select:hover {
+            .luatools-settings-overlay select:hover,
+            .luatools-settings-manager-overlay select:hover,
+            .luatools-overlay select:hover,
+            .luatools-fixes-results-overlay select:hover,
+            .luatools-loadedapps-overlay select:hover {
                 border-color: ${theme.borderHover} !important;
             }
-            .MLZ-settings-overlay select:focus,
-            .MLZ-settings-manager-overlay select:focus,
-            .MLZ-overlay select:focus,
-            .MLZ-fixes-results-overlay select:focus,
-            .MLZ-loadedapps-overlay select:focus {
+            .luatools-settings-overlay select:focus,
+            .luatools-settings-manager-overlay select:focus,
+            .luatools-overlay select:focus,
+            .luatools-fixes-results-overlay select:focus,
+            .luatools-loadedapps-overlay select:focus {
                 outline: none !important;
                 border-color: ${theme.accent} !important;
                 box-shadow: 0 0 0 2px ${theme.shadow} !important;
             }
-            .MLZ-btn {
+            .luatools-btn {
                 padding: 12px 24px;
                 background: ${theme.bgTertiary};
                 border: 2px solid ${theme.border.replace('0.3', '0.5')};
@@ -981,13 +981,13 @@
                 box-shadow: 0 2px 8px ${theme.shadow};
                 letter-spacing: 0.3px;
             }
-            .MLZ-btn:hover:not([data-disabled="1"]) {
+            .luatools-btn:hover:not([data-disabled="1"]) {
                 background: ${theme.bgHover};
                 transform: translateY(-2px);
                 box-shadow: 0 6px 20px ${theme.shadowHover};
                 border-color: ${theme.borderHover};
             }
-            .MLZ-btn.primary {
+            .luatools-btn.primary {
                 background: ${theme.gradient};
                 border-color: ${theme.borderHover.replace('0.8', '0.8')};
                 color: ${theme.text};
@@ -995,7 +995,7 @@
                 box-shadow: 0 4px 15px ${theme.shadow}, inset 0 1px 0 rgba(255,255,255,0.3);
                 text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             }
-            .MLZ-btn.primary:hover:not([data-disabled="1"]) {
+            .luatools-btn.primary:hover:not([data-disabled="1"]) {
                 background: ${theme.gradientLight};
                 transform: translateY(-3px) scale(1.03);
                 box-shadow: 0 8px 25px ${theme.shadowHover}, inset 0 1px 0 rgba(255,255,255,0.4);
@@ -1026,7 +1026,7 @@
     }
 
     function ensureThemeStylesheet(themeKey) {
-        const id = 'MLZ-theme-css';
+        const id = 'luatools-theme-css';
         const href = 'themes/' + themeKey + '.css';
         const link = document.getElementById(id);
         if (link) {
@@ -1049,7 +1049,7 @@
     }
 
     function ensureMLZStyles() {
-        const styleEl = document.getElementById('MLZ-styles');
+        const styleEl = document.getElementById('luatools-styles');
         const themeKey = getCurrentThemeKey();
         const theme = getCurrentTheme();
         const styles = generateThemeStyles(theme);
@@ -1063,7 +1063,7 @@
         } else {
             try {
                 const style = document.createElement('style');
-                style.id = 'MLZ-styles';
+                style.id = 'luatools-styles';
                 style.textContent = styles;
                 document.head.appendChild(style);
             } catch (err) {
@@ -1073,10 +1073,10 @@
     }
 
     function ensureFontAwesome() {
-        if (document.getElementById('MLZ-fontawesome')) return;
+        if (document.getElementById('luatools-fontawesome')) return;
         try {
             const link = document.createElement('link');
-            link.id = 'MLZ-fontawesome';
+            link.id = 'luatools-fontawesome';
             link.rel = 'stylesheet';
             link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
             link.integrity = 'sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==';
@@ -1089,23 +1089,23 @@
     }
 
     function showSettingsPopup() {
-        if (document.querySelector('.MLZ-settings-overlay') || settingsMenuPending) return;
+        if (document.querySelector('.luatools-settings-overlay') || settingsMenuPending) return;
         settingsMenuPending = true;
         ensureTranslationsLoaded(false).catch(function () {
             return null;
         }).finally(function () {
             settingsMenuPending = false;
-            if (document.querySelector('.MLZ-settings-overlay')) return;
+            if (document.querySelector('.luatools-settings-overlay')) return;
 
             try {
-                const d = document.querySelector('.MLZ-overlay');
+                const d = document.querySelector('.luatools-overlay');
                 if (d) d.remove();
             } catch (_) { }
             ensureMLZStyles();
             ensureFontAwesome();
 
             const overlay = document.createElement('div');
-            overlay.className = 'MLZ-settings-overlay';
+            overlay.className = 'luatools-settings-overlay';
             overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;';
 
             const modal = document.createElement('div');
@@ -1152,8 +1152,8 @@
             // Add mouse mode tip for Big Picture
             if (window.__LUATOOLS_IS_BIG_PICTURE__) {
                 const tip = document.createElement('div');
-                tip.style.cssText = 'background:rgba(102,192,244,0.15);border-left:3px solid #a855f7;padding:12px 16px;border-radius:6px;font-size:13px;color:#c7d5e0;margin-bottom:16px;line-height:1.5;';
-                tip.innerHTML = '<i class="fa-solid fa-info-circle" style="margin-right:8px;color:#a855f7;"></i>' + t('bigpicture.mouseTip', 'To use mouse mode in Steam: Guide Button + Right Joystick, click with RB');
+                tip.style.cssText = 'background:rgba(102,192,244,0.15);border-left:3px solid #66c0f4;padding:12px 16px;border-radius:6px;font-size:13px;color:#c7d5e0;margin-bottom:16px;line-height:1.5;';
+                tip.innerHTML = '<i class="fa-solid fa-info-circle" style="margin-right:8px;color:#66c0f4;"></i>' + t('bigpicture.mouseTip', 'To use mouse mode in Steam: Guide Button + Right Joystick, click with RB');
                 body.appendChild(tip);
             }
 
@@ -1235,7 +1235,7 @@
                         overlay.remove();
                     } catch (_) { }
                     try {
-                        Millennium.callServerMethod('MLZ', 'CheckForUpdatesNow', {
+                        Millennium.callServerMethod('luatools', 'CheckForUpdatesNow', {
                             contentScriptQuery: ''
                         }).then(function (res) {
                             try {
@@ -1254,9 +1254,9 @@
                     try {
                         overlay.remove();
                     } catch (_) { }
-                    const url = 'https://discord.gg/MLZ';
+                    const url = 'https://discord.gg/luatools';
                     try {
-                        Millennium.callServerMethod('MLZ', 'OpenExternalUrl', {
+                        Millennium.callServerMethod('luatools', 'OpenExternalUrl', {
                             url,
                             contentScriptQuery: ''
                         });
@@ -1271,7 +1271,7 @@
                         overlay.remove();
                     } catch (_) { }
                     try {
-                        Millennium.callServerMethod('MLZ', 'FetchFreeApisNow', {
+                        Millennium.callServerMethod('luatools', 'FetchFreeApisNow', {
                             contentScriptQuery: ''
                         }).then(function (res) {
                             try {
@@ -1320,7 +1320,7 @@
                             return;
                         }
 
-                        Millennium.callServerMethod('MLZ', 'GetGameInstallPath', {
+                        Millennium.callServerMethod('luatools', 'GetGameInstallPath', {
                             appid,
                             contentScriptQuery: ''
                         }).then(function (pathRes) {
@@ -1359,7 +1359,7 @@
                 const match = window.location.href.match(/https:\/\/store\.steampowered\.com\/app\/(\d+)/) || window.location.href.match(/https:\/\/steamcommunity\.com\/app\/(\d+)/);
                 const appid = match ? parseInt(match[1], 10) : (window.__MLZCurrentAppId || NaN);
                 if (!isNaN(appid) && typeof Millennium !== 'undefined' && typeof Millennium.callServerMethod === 'function') {
-                    Millennium.callServerMethod('MLZ', 'HasMLZForApp', {
+                    Millennium.callServerMethod('luatools', 'HasMLZForApp', {
                         appid,
                         contentScriptQuery: ''
                     }).then(function (res) {
@@ -1369,7 +1369,7 @@
                             if (exists) {
                                 const doDelete = function () {
                                     try {
-                                        Millennium.callServerMethod('MLZ', 'DeleteMLZForApp', {
+                                        Millennium.callServerMethod('luatools', 'DeleteMLZForApp', {
                                             appid,
                                             contentScriptQuery: ''
                                         }).then(function () {
@@ -1443,7 +1443,7 @@
                 if (steamLang.toLowerCase() === 'es-419') steamLang = 'es';
                 targetLanguage = useSteamLang ? steamLang : ((window.__MLZI18n && window.__MLZI18n.language) || 'en');
             }
-            return Millennium.callServerMethod('MLZ', 'GetTranslations', {
+            return Millennium.callServerMethod('luatools', 'GetTranslations', {
                 language: targetLanguage,
                 contentScriptQuery: ''
             }).then(function (res) {
@@ -1512,17 +1512,17 @@
     function showTestPopup() {
 
         // Avoid duplicates
-        if (document.querySelector('.MLZ-overlay')) return;
+        if (document.querySelector('.luatools-overlay')) return;
         // Close settings popup if open so modals don't overlap
         try {
-            const s = document.querySelector('.MLZ-settings-overlay');
+            const s = document.querySelector('.luatools-settings-overlay');
             if (s) s.remove();
         } catch (_) { }
 
         ensureMLZStyles();
         ensureFontAwesome();
         const overlay = document.createElement('div');
-        overlay.className = 'MLZ-overlay';
+        overlay.className = 'luatools-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;';
 
         const modal = document.createElement('div');
@@ -1532,12 +1532,12 @@
         const title = document.createElement('div');
         const titleColors = getThemeColors();
         title.style.cssText = `font-size:22px;color:${titleColors.text};margin-bottom:20px;font-weight:700;text-shadow:0 2px 8px ${titleColors.shadow};background:${titleColors.gradientLight};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;`;
-        title.className = 'MLZ-title';
+        title.className = 'luatools-title';
         title.textContent = t('common.appName', 'MLZ');
 
         // API list container
         const apiListContainer = document.createElement('div');
-        apiListContainer.className = 'MLZ-api-list';
+        apiListContainer.className = 'luatools-api-list';
         apiListContainer.style.cssText = 'margin-bottom:16px;';
 
         // Placeholder while loading APIs
@@ -1548,7 +1548,7 @@
 
         // Load APIs dynamically from backend
         if (typeof Millennium !== 'undefined' && typeof Millennium.callServerMethod === 'function') {
-            Millennium.callServerMethod('MLZ', 'GetApiList', {
+            Millennium.callServerMethod('luatools', 'GetApiList', {
                 contentScriptQuery: ''
             }).then(function (res) {
                 try {
@@ -1560,17 +1560,17 @@
                         // Create API items
                         payload.apis.forEach((api, index) => {
                             const apiItem = document.createElement('div');
-                            apiItem.className = `MLZ-api-item MLZ-api-${index}`;
+                            apiItem.className = `luatools-api-item luatools-api-${index}`;
                             apiItem.setAttribute('data-api-name', api.name);
                             apiItem.style.cssText = `display:flex;align-items:center;justify-content:space-between;padding:10px 14px;margin-bottom:8px;background:rgba(${colors.rgbString},0.1);border:1px solid ${colors.borderRgba};border-radius:6px;transition:all 0.2s;`;
 
                             const apiName = document.createElement('div');
-                            apiName.className = 'MLZ-api-name';
+                            apiName.className = 'luatools-api-name';
                             apiName.style.cssText = `font-size:14px;color:${colors.textSecondary};font-weight:500;`;
                             apiName.textContent = api.name;
 
                             const apiStatus = document.createElement('div');
-                            apiStatus.className = 'MLZ-api-status';
+                            apiStatus.className = 'luatools-api-status';
                             apiStatus.style.cssText = `font-size:14px;color:${colors.textSecondary};display:flex;align-items:center;gap:6px;`;
                             apiStatus.innerHTML = '<span>' + lt('Waiting…') + '</span><i class="fa-solid fa-spinner" style="animation: spin 1.5s linear infinite;"></i>';
 
@@ -1589,27 +1589,27 @@
 
         const body = document.createElement('div');
         body.style.cssText = `font-size:14px;line-height:1.4;margin-bottom:12px;color:${colors.textSecondary};`;
-        body.className = 'MLZ-status';
+        body.className = 'luatools-status';
         body.textContent = lt('Checking availability…');
 
         const progressWrap = document.createElement('div');
         progressWrap.style.cssText = `background:rgba(0,0,0,0.3);height:20px;border-radius:4px;overflow:hidden;position:relative;display:none;border:1px solid ${colors.border};margin-top:12px;`;
-        progressWrap.className = 'MLZ-progress-wrap';
+        progressWrap.className = 'luatools-progress-wrap';
         const progressBar = document.createElement('div');
         progressBar.style.cssText = `height:100%;width:0%;background:${colors.gradient};transition:width 0.3s ease;box-shadow:0 0 10px ${colors.shadow};`;
-        progressBar.className = 'MLZ-progress-bar';
+        progressBar.className = 'luatools-progress-bar';
         progressWrap.appendChild(progressBar);
 
         const progressInfo = document.createElement('div');
         progressInfo.style.cssText = `display:none;margin-top:8px;font-size:12px;color:${colors.textSecondary};`;
-        progressInfo.className = 'MLZ-progress-info';
+        progressInfo.className = 'luatools-progress-info';
 
         const percent = document.createElement('span');
-        percent.className = 'MLZ-percent';
+        percent.className = 'luatools-percent';
         percent.textContent = '0%';
 
         const downloadSize = document.createElement('span');
-        downloadSize.className = 'MLZ-download-size';
+        downloadSize.className = 'luatools-download-size';
         downloadSize.style.cssText = 'margin-left:12px;';
         downloadSize.textContent = '';
 
@@ -1619,7 +1619,7 @@
         const btnRow = document.createElement('div');
         btnRow.style.cssText = 'margin-top:20px;display:flex;gap:8px;justify-content:flex-end;';
         const cancelBtn = document.createElement('a');
-        cancelBtn.className = 'MLZ-btn MLZ-cancel-btn';
+        cancelBtn.className = 'luatools-btn luatools-cancel-btn';
         cancelBtn.innerHTML = `<span>${lt('Cancel')}</span>`;
         cancelBtn.href = '#';
         cancelBtn.style.display = 'none';
@@ -1628,7 +1628,7 @@
             cancelOperation();
         };
         const hideBtn = document.createElement('a');
-        hideBtn.className = 'MLZ-btn MLZ-hide-btn';
+        hideBtn.className = 'luatools-btn luatools-hide-btn';
         hideBtn.innerHTML = `<span>${lt('Hide')}</span>`;
         hideBtn.href = '#';
         hideBtn.onclick = function (e) {
@@ -1664,22 +1664,22 @@
                 const match = window.location.href.match(/https:\/\/store\.steampowered\.com\/app\/(\d+)/) || window.location.href.match(/https:\/\/steamcommunity\.com\/app\/(\d+)/);
                 const appid = match ? parseInt(match[1], 10) : (window.__MLZCurrentAppId || NaN);
                 if (!isNaN(appid) && typeof Millennium !== 'undefined' && typeof Millennium.callServerMethod === 'function') {
-                    Millennium.callServerMethod('MLZ', 'CancelAddViaMLZ', {
+                    Millennium.callServerMethod('luatools', 'CancelAddViaMLZ', {
                         appid,
                         contentScriptQuery: ''
                     });
                 }
             } catch (_) { }
             // Update UI to show cancelled
-            const status = overlay.querySelector('.MLZ-status');
+            const status = overlay.querySelector('.luatools-status');
             if (status) status.textContent = lt('Cancelled');
-            const cancelBtn = overlay.querySelector('.MLZ-cancel-btn');
+            const cancelBtn = overlay.querySelector('.luatools-cancel-btn');
             if (cancelBtn) cancelBtn.style.display = 'none';
-            const hideBtn = overlay.querySelector('.MLZ-hide-btn');
+            const hideBtn = overlay.querySelector('.luatools-hide-btn');
             if (hideBtn) hideBtn.innerHTML = `<span>${lt('Close')}</span>`;
             // Hide progress UI
-            const wrap = overlay.querySelector('.MLZ-progress-wrap');
-            const progressInfo = overlay.querySelector('.MLZ-progress-info');
+            const wrap = overlay.querySelector('.luatools-progress-wrap');
+            const progressInfo = overlay.querySelector('.luatools-progress-info');
             if (wrap) wrap.style.display = 'none';
             if (progressInfo) progressInfo.style.display = 'none';
             // Reset run state
@@ -1690,29 +1690,29 @@
 
     // Fixes Results popup
     function showFixesResultsPopup(data, isGameInstalled) {
-        if (document.querySelector('.MLZ-fixes-results-overlay')) return;
+        if (document.querySelector('.luatools-fixes-results-overlay')) return;
         // Close other popups
         try {
-            const d = document.querySelector('.MLZ-overlay');
+            const d = document.querySelector('.luatools-overlay');
             if (d) d.remove();
         } catch (_) { }
         try {
-            const s = document.querySelector('.MLZ-settings-overlay');
+            const s = document.querySelector('.luatools-settings-overlay');
             if (s) s.remove();
         } catch (_) { }
         try {
-            const f = document.querySelector('.MLZ-fixes-results-overlay');
+            const f = document.querySelector('.luatools-fixes-results-overlay');
             if (f) f.remove();
         } catch (_) { }
         try {
-            const l = document.querySelector('.MLZ-loading-fixes-overlay');
+            const l = document.querySelector('.luatools-loading-fixes-overlay');
             if (l) l.remove();
         } catch (_) { }
 
         ensureMLZStyles();
         ensureFontAwesome();
         const overlay = document.createElement('div');
-        overlay.className = 'MLZ-fixes-results-overlay';
+        overlay.className = 'luatools-fixes-results-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;';
 
         const modal = document.createElement('div');
@@ -1772,8 +1772,8 @@
         // Add mouse mode tip for Big Picture
         if (window.__LUATOOLS_IS_BIG_PICTURE__) {
             const tip = document.createElement('div');
-            tip.style.cssText = 'background:rgba(102,192,244,0.15);border-left:3px solid #a855f7;padding:12px 16px;border-radius:6px;font-size:13px;color:#c7d5e0;margin-bottom:16px;line-height:1.5;';
-            tip.innerHTML = '<i class="fa-solid fa-info-circle" style="margin-right:8px;color:#a855f7;"></i>' + t('bigpicture.mouseTip', 'To use mouse mode in Steam: Guide Button + Right Joystick, click with RB');
+            tip.style.cssText = 'background:rgba(102,192,244,0.15);border-left:3px solid #66c0f4;padding:12px 16px;border-radius:6px;font-size:13px;color:#c7d5e0;margin-bottom:16px;line-height:1.5;';
+            tip.innerHTML = '<i class="fa-solid fa-info-circle" style="margin-right:8px;color:#66c0f4;"></i>' + t('bigpicture.mouseTip', 'To use mouse mode in Steam: Guide Button + Right Joystick, click with RB');
             body.appendChild(tip);
         }
 
@@ -1903,7 +1903,7 @@
             function (e) {
                 e.preventDefault();
                 if (genericStatus === 200 && isGameInstalled) {
-                    const genericUrl = 'https://files.MLZ.work/GameBypasses/' + data.appid + '.zip';
+                    const genericUrl = 'https://files.luatools.work/GameBypasses/' + data.appid + '.zip';
                     applyFix(data.appid, genericUrl, lt('Generic Fix'), data.gameName, overlay);
                 }
             }
@@ -1924,7 +1924,7 @@
             function (e) {
                 e.preventDefault();
                 if (onlineStatus === 200 && isGameInstalled) {
-                    const onlineUrl = data.onlineFix.url || ('https://files.MLZ.work/OnlineFix1/' + data.appid + '.zip');
+                    const onlineUrl = data.onlineFix.url || ('https://files.luatools.work/OnlineFix1/' + data.appid + '.zip');
                     applyFix(data.appid, onlineUrl, lt('Online Fix'), data.gameName, overlay);
                 }
             }
@@ -1945,7 +1945,7 @@
             function (e) {
                 e.preventDefault();
                 if (isGameInstalled) {
-                    const downloadUrl = 'https://github.com/MLZ/MLZ_links/releases/download/unsteam/Win64.zip';
+                    const downloadUrl = 'https://github.com/madoiscool/lt_api_links/releases/download/unsteam/Win64.zip';
                     applyFix(data.appid, downloadUrl, lt('Online Fix (Unsteam)'), data.gameName, overlay);
                 }
             }
@@ -1998,7 +1998,7 @@
                 shayenviLink.addEventListener('click', function (e) {
                     e.preventDefault();
                     try {
-                        Millennium.callServerMethod('MLZ', 'OpenExternalUrl', {
+                        Millennium.callServerMethod('luatools', 'OpenExternalUrl', {
                             url: 'https://github.com/ShayneVi/',
                             contentScriptQuery: ''
                         });
@@ -2035,14 +2035,14 @@
         const rightButtons = document.createElement('div');
         rightButtons.style.cssText = 'display:flex;gap:8px;';
         const gameFolderBtn = document.createElement('a');
-        gameFolderBtn.className = 'MLZ-btn';
+        gameFolderBtn.className = 'luatools-btn';
         gameFolderBtn.innerHTML = `<span><i class="fa-solid fa-folder" style="margin-right: 8px;"></i>${lt('Game folder')}</span>`;
         gameFolderBtn.href = '#';
         gameFolderBtn.onclick = function (e) {
             e.preventDefault();
             if (window.__MLZGameInstallPath) {
                 try {
-                    Millennium.callServerMethod('MLZ', 'OpenGameFolder', {
+                    Millennium.callServerMethod('luatools', 'OpenGameFolder', {
                         path: window.__MLZGameInstallPath,
                         contentScriptQuery: ''
                     });
@@ -2054,7 +2054,7 @@
         rightButtons.appendChild(gameFolderBtn);
 
         const backBtn = document.createElement('a');
-        backBtn.className = 'MLZ-btn';
+        backBtn.className = 'luatools-btn';
         backBtn.innerHTML = '<span><i class="fa-solid fa-arrow-left"></i></span>';
         backBtn.href = '#';
         backBtn.onclick = function (e) {
@@ -2090,9 +2090,9 @@
             try {
                 overlay.remove();
             } catch (_) { }
-            const url = 'https://discord.gg/MLZ';
+            const url = 'https://discord.gg/luatools';
             try {
-                Millennium.callServerMethod('MLZ', 'OpenExternalUrl', {
+                Millennium.callServerMethod('luatools', 'OpenExternalUrl', {
                     url,
                     contentScriptQuery: ''
                 });
@@ -2110,7 +2110,7 @@
 
         function startUnfix(appid) {
             try {
-                Millennium.callServerMethod('MLZ', 'UnFixGame', {
+                Millennium.callServerMethod('luatools', 'UnFixGame', {
                     appid: appid,
                     installPath: window.__MLZGameInstallPath,
                     contentScriptQuery: ''
@@ -2134,24 +2134,24 @@
     }
 
     function showFixesLoadingPopupAndCheck(appid) {
-        if (document.querySelector('.MLZ-loading-fixes-overlay')) return;
+        if (document.querySelector('.luatools-loading-fixes-overlay')) return;
         try {
-            const d = document.querySelector('.MLZ-overlay');
+            const d = document.querySelector('.luatools-overlay');
             if (d) d.remove();
         } catch (_) { }
         try {
-            const s = document.querySelector('.MLZ-settings-overlay');
+            const s = document.querySelector('.luatools-settings-overlay');
             if (s) s.remove();
         } catch (_) { }
         try {
-            const f = document.querySelector('.MLZ-fixes-overlay');
+            const f = document.querySelector('.luatools-fixes-overlay');
             if (f) f.remove();
         } catch (_) { }
 
         ensureMLZStyles();
         ensureFontAwesome();
         const overlay = document.createElement('div');
-        overlay.className = 'MLZ-loading-fixes-overlay';
+        overlay.className = 'luatools-loading-fixes-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;';
 
         const modal = document.createElement('div');
@@ -2212,7 +2212,7 @@
             progressBar.style.width = '100%';
             setTimeout(function () {
                 try {
-                    const l = document.querySelector('.MLZ-loading-fixes-overlay');
+                    const l = document.querySelector('.luatools-loading-fixes-overlay');
                     if (l) l.remove();
                 } catch (_) { }
             }, 300);
@@ -2237,7 +2237,7 @@
             backendLog('MLZ: Applying fix ' + fixType + ' for appid ' + appid);
 
             // Start the download and extraction process
-            Millennium.callServerMethod('MLZ', 'ApplyGameFix', {
+            Millennium.callServerMethod('luatools', 'ApplyGameFix', {
                 appid: appid,
                 downloadUrl: downloadUrl,
                 installPath: window.__MLZGameInstallPath,
@@ -2273,12 +2273,12 @@
     // Show fix download progress popup
     function showFixDownloadProgress(appid, fixType) {
         // Reuse the download popup UI from Add via MLZ
-        if (document.querySelector('.MLZ-overlay')) return;
+        if (document.querySelector('.luatools-overlay')) return;
 
         ensureMLZStyles();
         ensureFontAwesome();
         const overlay = document.createElement('div');
-        overlay.className = 'MLZ-overlay';
+        overlay.className = 'luatools-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;';
 
         const modal = document.createElement('div');
@@ -2301,7 +2301,7 @@
 
         const hideBtn = document.createElement('a');
         hideBtn.href = '#';
-        hideBtn.className = 'MLZ-btn';
+        hideBtn.className = 'luatools-btn';
         hideBtn.style.flex = '1';
         hideBtn.innerHTML = `<span>${lt('Hide')}</span>`;
         hideBtn.onclick = function (e) {
@@ -2312,7 +2312,7 @@
 
         const cancelBtn = document.createElement('a');
         cancelBtn.href = '#';
-        cancelBtn.className = 'MLZ-btn primary';
+        cancelBtn.className = 'luatools-btn primary';
         cancelBtn.style.flex = '1';
         cancelBtn.innerHTML = `<span>${lt('Cancel')}</span>`;
         cancelBtn.onclick = function (e) {
@@ -2323,7 +2323,7 @@
             if (span) span.textContent = lt('Cancelling...');
             const msgEl = document.getElementById('lt-fix-progress-msg');
             if (msgEl) msgEl.textContent = lt('Cancelling...');
-            Millennium.callServerMethod('MLZ', 'CancelApplyFix', {
+            Millennium.callServerMethod('luatools', 'CancelApplyFix', {
                 appid: appid,
                 contentScriptQuery: ''
             }).then(function (res) {
@@ -2379,7 +2379,7 @@
         btnRow.style.cssText = 'margin-top:16px;display:flex;justify-content:flex-end;';
         const closeBtn = document.createElement('a');
         closeBtn.href = '#';
-        closeBtn.className = 'MLZ-btn primary';
+        closeBtn.className = 'luatools-btn primary';
         closeBtn.style.minWidth = '140px';
         closeBtn.innerHTML = `<span>${lt('Close')}</span>`;
         closeBtn.onclick = function (e) {
@@ -2393,10 +2393,10 @@
     function pollFixProgress(appid, fixType) {
         const poll = function () {
             try {
-                const overlayEl = document.querySelector('.MLZ-overlay');
+                const overlayEl = document.querySelector('.luatools-overlay');
                 if (!overlayEl) return; // Stop if overlay was closed
 
-                Millennium.callServerMethod('MLZ', 'GetApplyFixStatus', {
+                Millennium.callServerMethod('luatools', 'GetApplyFixStatus', {
                     appid: appid,
                     contentScriptQuery: ''
                 }).then(function (res) {
@@ -2451,14 +2451,14 @@
     function showUnfixProgress(appid) {
         // Remove any existing popup
         try {
-            const old = document.querySelector('.MLZ-unfix-overlay');
+            const old = document.querySelector('.luatools-unfix-overlay');
             if (old) old.remove();
         } catch (_) { }
 
         ensureMLZStyles();
         ensureFontAwesome();
         const overlay = document.createElement('div');
-        overlay.className = 'MLZ-unfix-overlay';
+        overlay.className = 'luatools-unfix-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;';
 
         const modal = document.createElement('div');
@@ -2478,7 +2478,7 @@
         btnRow.style.cssText = 'margin-top:16px;display:flex;justify-content:center;';
         const hideBtn = document.createElement('a');
         hideBtn.href = '#';
-        hideBtn.className = 'MLZ-btn';
+        hideBtn.className = 'luatools-btn';
         hideBtn.style.minWidth = '140px';
         hideBtn.innerHTML = `<span>${lt('Hide')}</span>`;
         hideBtn.onclick = function (e) {
@@ -2508,10 +2508,10 @@
     function pollUnfixProgress(appid) {
         const poll = function () {
             try {
-                const overlayEl = document.querySelector('.MLZ-unfix-overlay');
+                const overlayEl = document.querySelector('.luatools-unfix-overlay');
                 if (!overlayEl) return; // Stop if overlay was closed
 
-                Millennium.callServerMethod('MLZ', 'GetUnfixStatus', {
+                Millennium.callServerMethod('luatools', 'GetUnfixStatus', {
                     appid: appid,
                     contentScriptQuery: ''
                 }).then(function (res) {
@@ -2535,7 +2535,7 @@
                                         btnRow.innerHTML = '';
                                         const closeBtn = document.createElement('a');
                                         closeBtn.href = '#';
-                                        closeBtn.className = 'MLZ-btn primary';
+                                        closeBtn.className = 'luatools-btn primary';
                                         closeBtn.style.minWidth = '140px';
                                         closeBtn.innerHTML = `<span>${lt('Close')}</span>`;
                                         closeBtn.onclick = function (e) {
@@ -2565,7 +2565,7 @@
                                         btnRow.innerHTML = '';
                                         const closeBtn = document.createElement('a');
                                         closeBtn.href = '#';
-                                        closeBtn.className = 'MLZ-btn primary';
+                                        closeBtn.className = 'luatools-btn primary';
                                         closeBtn.style.minWidth = '140px';
                                         closeBtn.innerHTML = `<span>${lt('Close')}</span>`;
                                         closeBtn.onclick = function (e) {
@@ -2603,7 +2603,7 @@
             return Promise.reject(new Error(lt('MLZ backend unavailable')));
         }
 
-        return Millennium.callServerMethod('MLZ', 'GetSettingsConfig', {
+        return Millennium.callServerMethod('luatools', 'GetSettingsConfig', {
             contentScriptQuery: ''
         }).then(function (res) {
             const payload = typeof res === 'string' ? JSON.parse(res) : res;
@@ -2654,10 +2654,10 @@
     }
 
     function showSettingsManagerPopup(forceRefresh, onBack) {
-        if (document.querySelector('.MLZ-settings-manager-overlay')) return;
+        if (document.querySelector('.luatools-settings-manager-overlay')) return;
 
         try {
-            const mainOverlay = document.querySelector('.MLZ-settings-overlay');
+            const mainOverlay = document.querySelector('.luatools-settings-overlay');
             if (mainOverlay) mainOverlay.remove();
         } catch (_) { }
 
@@ -2665,7 +2665,7 @@
         ensureFontAwesome();
 
         const overlay = document.createElement('div');
-        overlay.className = 'MLZ-settings-manager-overlay';
+        overlay.className = 'luatools-settings-manager-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:100000;display:flex;align-items:center;justify-content:center;';
 
         const modal = document.createElement('div');
@@ -2742,7 +2742,7 @@
 
         const searchInput = document.createElement('input');
         searchInput.type = 'text';
-        searchInput.id = 'MLZ-settings-search';
+        searchInput.id = 'luatools-settings-search';
         searchInput.placeholder = t('settings.search.placeholder', 'Search settings, games, fixes...');
         searchInput.style.cssText = `flex:1;background:transparent;border:none;outline:none;color:${searchColors.text};font-size:14px;`;
         searchInput.setAttribute('autocomplete', 'off');
@@ -2773,15 +2773,15 @@
         searchContainer.appendChild(searchWrap);
 
         const contentWrap = document.createElement('div');
-        contentWrap.id = 'MLZ-content-wrap';
+        contentWrap.id = 'luatools-content-wrap';
         const contentColors = getThemeColors();
         contentWrap.style.cssText = `flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding:20px;margin:0 24px;border:1px solid ${contentColors.border};border-radius:12px;background:${contentColors.bgContainer};`;
 
         // Add mouse mode tip for Big Picture
         if (window.__LUATOOLS_IS_BIG_PICTURE__) {
             const tip = document.createElement('div');
-            tip.style.cssText = 'background:rgba(102,192,244,0.15);border-left:3px solid #a855f7;padding:12px 16px;border-radius:6px;font-size:13px;color:#c7d5e0;margin-bottom:16px;line-height:1.5;';
-            tip.innerHTML = '<i class="fa-solid fa-info-circle" style="margin-right:8px;color:#a855f7;"></i>' + t('bigpicture.mouseTip', 'To use mouse mode in Steam: Guide Button + Right Joystick, click with RB');
+            tip.style.cssText = 'background:rgba(102,192,244,0.15);border-left:3px solid #66c0f4;padding:12px 16px;border-radius:6px;font-size:13px;color:#c7d5e0;margin-bottom:16px;line-height:1.5;';
+            tip.innerHTML = '<i class="fa-solid fa-info-circle" style="margin-right:8px;color:#66c0f4;"></i>' + t('bigpicture.mouseTip', 'To use mouse mode in Steam: Guide Button + Right Joystick, click with RB');
             contentWrap.appendChild(tip);
         }
 
@@ -2876,7 +2876,7 @@
             });
 
             // Show/hide fixes empty state
-            const fixesSection = document.getElementById('MLZ-installed-fixes-section');
+            const fixesSection = document.getElementById('luatools-installed-fixes-section');
             const fixesEmptySearch = fixesSection ? fixesSection.querySelector('.search-empty-state') : null;
             if (fixesSection && query && fixItems.length > 0 && visibleFixes === 0) {
                 if (!fixesEmptySearch) {
@@ -2885,7 +2885,7 @@
                     const emptyColors = getThemeColors();
                     emptyEl.style.cssText = `padding:14px;background:${emptyColors.bgTertiary};border:1px solid ${emptyColors.border};border-radius:4px;color:${emptyColors.textSecondary};text-align:center;margin-top:10px;`;
                     emptyEl.textContent = t('settings.search.noResults', 'No matches found');
-                    const listContainer = fixesSection.querySelector('#MLZ-fixes-list');
+                    const listContainer = fixesSection.querySelector('#luatools-fixes-list');
                     if (listContainer) listContainer.appendChild(emptyEl);
                 }
             } else if (fixesEmptySearch) {
@@ -2906,7 +2906,7 @@
             });
 
             // Show/hide lua empty state
-            const luaSection = document.getElementById('MLZ-installed-lua-section');
+            const luaSection = document.getElementById('luatools-installed-lua-section');
             const luaEmptySearch = luaSection ? luaSection.querySelector('.search-empty-state') : null;
             if (luaSection && query && luaItems.length > 0 && visibleLua === 0) {
                 if (!luaEmptySearch) {
@@ -2915,7 +2915,7 @@
                     const emptyColors = getThemeColors();
                     emptyEl.style.cssText = `padding:14px;background:${emptyColors.bgTertiary};border:1px solid ${emptyColors.border};border-radius:4px;color:${emptyColors.textSecondary};text-align:center;margin-top:10px;`;
                     emptyEl.textContent = t('settings.search.noResults', 'No matches found');
-                    const listContainer = luaSection.querySelector('#MLZ-lua-list');
+                    const listContainer = luaSection.querySelector('#luatools-lua-list');
                     if (listContainer) listContainer.appendChild(emptyEl);
                 }
             } else if (luaEmptySearch) {
@@ -2934,7 +2934,7 @@
             btn.href = '#';
             btn.innerHTML = '<span>' + text + '</span>';
 
-            btn.className = 'MLZ-btn';
+            btn.className = 'luatools-btn';
             if (isPrimary) {
                 btn.classList.add('primary');
             }
@@ -2977,10 +2977,10 @@
         applyStaticTranslations();
 
         function setStatus(text, color) {
-            let statusLine = contentWrap.querySelector('.MLZ-settings-status');
+            let statusLine = contentWrap.querySelector('.luatools-settings-status');
             if (!statusLine) {
                 statusLine = document.createElement('div');
-                statusLine.className = 'MLZ-settings-status';
+                statusLine.className = 'luatools-settings-status';
                 statusLine.style.cssText = 'font-size:13px;margin-top:10px;transform:translateY(15px);color:#c7d5e0;min-height:18px;text-align:center;'; // may god have mercy upon your soul for witnessing this translateY
                 contentWrap.insertBefore(statusLine, contentWrap.firstChild);
             }
@@ -3211,7 +3211,7 @@
                                     }
 
                                     // Update content wrapper border
-                                    const contentWrapEl = overlay && overlay.querySelector('#MLZ-content-wrap');
+                                    const contentWrapEl = overlay && overlay.querySelector('#luatools-content-wrap');
                                     if (contentWrapEl) {
                                         contentWrapEl.style.borderColor = colors.border;
                                         contentWrapEl.style.background = colors.bgContainer;
@@ -3369,7 +3369,7 @@
 
         function renderInstalledFixesSection() {
             const sectionEl = document.createElement('div');
-            sectionEl.id = 'MLZ-installed-fixes-section';
+            sectionEl.id = 'luatools-installed-fixes-section';
             const sectionColors = getThemeColors();
             sectionEl.style.cssText = `margin-top:36px;padding:24px;background:linear-gradient(135deg, rgba(${sectionColors.rgbString},0.05) 0%, rgba(${sectionColors.rgbString},0.08) 100%);border:2px solid ${sectionColors.border};border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);position:relative;overflow:hidden;`;
 
@@ -3384,7 +3384,7 @@
             sectionEl.appendChild(sectionTitle);
 
             const listContainer = document.createElement('div');
-            listContainer.id = 'MLZ-fixes-list';
+            listContainer.id = 'luatools-fixes-list';
             listContainer.style.cssText = 'min-height:50px;';
             sectionEl.appendChild(listContainer);
 
@@ -3397,7 +3397,7 @@
             const loadingColors = getThemeColors();
             container.innerHTML = `<div style="padding:14px;text-align:center;color:${loadingColors.textSecondary};">${t('settings.installedFixes.loading', 'Scanning for installed fixes...')}</div>`;
 
-            Millennium.callServerMethod('MLZ', 'GetInstalledFixes', {
+            Millennium.callServerMethod('luatools', 'GetInstalledFixes', {
                 contentScriptQuery: ''
             })
                 .then(function (res) {
@@ -3533,7 +3533,7 @@
                         deleteBtn.style.opacity = '0.6';
                         deleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
-                        Millennium.callServerMethod('MLZ', 'UnFixGame', {
+                        Millennium.callServerMethod('luatools', 'UnFixGame', {
                             appid: fix.appid,
                             installPath: fix.installPath || '',
                             fixDate: fix.date || '',
@@ -3584,7 +3584,7 @@
 
                 pollCount++;
 
-                Millennium.callServerMethod('MLZ', 'GetUnfixStatus', {
+                Millennium.callServerMethod('luatools', 'GetUnfixStatus', {
                     appid: appid,
                     contentScriptQuery: ''
                 })
@@ -3643,7 +3643,7 @@
 
         function renderInstalledLuaSection() {
             const sectionEl = document.createElement('div');
-            sectionEl.id = 'MLZ-installed-lua-section';
+            sectionEl.id = 'luatools-installed-lua-section';
             const sectionLuaColors = getThemeColors();
             sectionEl.style.cssText = `margin-top:36px;padding:24px;background:linear-gradient(135deg, rgba(${sectionLuaColors.rgbString},0.05) 0%, rgba(${sectionLuaColors.rgbString},0.08) 100%);border:2px solid ${sectionLuaColors.border};border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);position:relative;overflow:hidden;`;
 
@@ -3658,7 +3658,7 @@
             sectionEl.appendChild(sectionTitle);
 
             const listContainer = document.createElement('div');
-            listContainer.id = 'MLZ-lua-list';
+            listContainer.id = 'luatools-lua-list';
             listContainer.style.cssText = 'min-height:50px;';
             sectionEl.appendChild(listContainer);
 
@@ -3670,7 +3670,7 @@
         function loadInstalledLuaScripts(container) {
             container.innerHTML = '<div style="padding:14px;text-align:center;color:#c7d5e0;">' + t('settings.installedLua.loading', 'Scanning for installed Lua scripts...') + '</div>';
 
-            Millennium.callServerMethod('MLZ', 'GetInstalledLuaScripts', {
+            Millennium.callServerMethod('luatools', 'GetInstalledLuaScripts', {
                 contentScriptQuery: ''
             })
                 .then(function (res) {
@@ -3814,7 +3814,7 @@
                         deleteBtn.style.opacity = '0.6';
                         deleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
-                        Millennium.callServerMethod('MLZ', 'DeleteMLZForApp', {
+                        Millennium.callServerMethod('luatools', 'DeleteMLZForApp', {
                             appid: script.appid,
                             contentScriptQuery: ''
                         })
@@ -3931,7 +3931,7 @@
                 backendLog('MLZ: sending settings payload ' + JSON.stringify(payloadToSend));
             } catch (_) { }
             // Pass flattened keys so Millennium handles the RPC arguments as expected.
-            Millennium.callServerMethod('MLZ', 'ApplySettingsChanges', {
+            Millennium.callServerMethod('luatools', 'ApplySettingsChanges', {
                 contentScriptQuery: '',
                 changesJson: JSON.stringify(payloadToSend)
             }).then(function (res) {
@@ -4025,9 +4025,9 @@
 
         discordIconBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            const url = 'https://discord.gg/MLZ';
+            const url = 'https://discord.gg/luatools';
             try {
-                Millennium.callServerMethod('MLZ', 'OpenExternalUrl', {
+                Millennium.callServerMethod('luatools', 'OpenExternalUrl', {
                     url,
                     contentScriptQuery: ''
                 });
@@ -4047,7 +4047,7 @@
     function closeSettingsOverlay() {
         try {
             // Remove all settings overlays (robust against older NodeList forEach support)
-            var list = document.getElementsByClassName('MLZ-settings-overlay');
+            var list = document.getElementsByClassName('luatools-settings-overlay');
             while (list && list.length > 0) {
                 try {
                     list[0].remove();
@@ -4056,7 +4056,7 @@
                 }
             }
             // Also remove any download/progress overlays if present
-            var list2 = document.getElementsByClassName('MLZ-overlay');
+            var list2 = document.getElementsByClassName('luatools-overlay');
             while (list2 && list2.length > 0) {
                 try {
                     list2[0].remove();
@@ -4069,12 +4069,12 @@
 
     // Custom modern alert dialog
     function showMLZAlert(title, message, onClose) {
-        if (document.querySelector('.MLZ-alert-overlay')) return;
+        if (document.querySelector('.luatools-alert-overlay')) return;
 
         ensureMLZStyles();
         ensureFontAwesome();
         const overlay = document.createElement('div');
-        overlay.className = 'MLZ-alert-overlay';
+        overlay.className = 'luatools-alert-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:100001;display:flex;align-items:center;justify-content:center;';
 
         const modal = document.createElement('div');
@@ -4096,7 +4096,7 @@
 
         const okBtn = document.createElement('a');
         okBtn.href = '#';
-        okBtn.className = 'MLZ-btn primary';
+        okBtn.className = 'luatools-btn primary';
         okBtn.style.minWidth = '140px';
         okBtn.innerHTML = `<span>${lt('Close')}</span>`;
         okBtn.onclick = function (e) {
@@ -4151,12 +4151,12 @@
         closeSettingsOverlay();
 
         // Create custom modern confirmation dialog
-        if (document.querySelector('.MLZ-confirm-overlay')) return;
+        if (document.querySelector('.luatools-confirm-overlay')) return;
 
         ensureMLZStyles();
         ensureFontAwesome();
         const overlay = document.createElement('div');
-        overlay.className = 'MLZ-confirm-overlay';
+        overlay.className = 'luatools-confirm-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:100001;display:flex;align-items:center;justify-content:center;';
 
         const modal = document.createElement('div');
@@ -4178,7 +4178,7 @@
 
         const cancelBtn = document.createElement('a');
         cancelBtn.href = '#';
-        cancelBtn.className = 'MLZ-btn';
+        cancelBtn.className = 'luatools-btn';
         cancelBtn.style.flex = '1';
         cancelBtn.innerHTML = `<span>${lt('Cancel')}</span>`;
         cancelBtn.onclick = function (e) {
@@ -4190,7 +4190,7 @@
         };
         const confirmBtn = document.createElement('a');
         confirmBtn.href = '#';
-        confirmBtn.className = 'MLZ-btn primary';
+        confirmBtn.className = 'luatools-btn primary';
         confirmBtn.style.flex = '1';
         confirmBtn.innerHTML = `<span>${lt('Confirm')}</span>`;
         confirmBtn.onclick = function (e) {
@@ -4232,13 +4232,13 @@
     function showDlcWarning(appid, fullgameAppid, fullgameName) {
         // Close settings so modal is visible
         closeSettingsOverlay();
-        if (document.querySelector('.MLZ-dlc-warning-overlay')) return;
+        if (document.querySelector('.luatools-dlc-warning-overlay')) return;
 
         ensureMLZStyles();
         ensureFontAwesome();
 
         const overlay = document.createElement('div');
-        overlay.className = 'MLZ-dlc-warning-overlay MLZ-overlay';
+        overlay.className = 'luatools-dlc-warning-overlay luatools-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:100001;display:flex;align-items:center;justify-content:center;';
 
         const modal = document.createElement('div');
@@ -4265,7 +4265,7 @@
 
         const cancelBtn = document.createElement('a');
         cancelBtn.href = '#';
-        cancelBtn.className = 'MLZ-btn';
+        cancelBtn.className = 'luatools-btn';
         cancelBtn.style.flex = '1';
         cancelBtn.innerHTML = `<span>${lt('Cancel')}</span>`;
         cancelBtn.onclick = function (e) {
@@ -4275,7 +4275,7 @@
 
         const goBtn = document.createElement('a');
         goBtn.href = 'https://store.steampowered.com/app/' + fullgameAppid;
-        goBtn.className = 'MLZ-btn primary';
+        goBtn.className = 'luatools-btn primary';
         goBtn.style.flex = '1.5';
         goBtn.innerHTML = `<span>${lt('Go to Base Game')}</span>`;
         goBtn.onclick = function (e) {
@@ -4307,13 +4307,13 @@
     function showMLZPlayableWarning(message, onProceed, onCancel) {
         // Close settings so modal is visible
         closeSettingsOverlay();
-        if (document.querySelector('.MLZ-playable-warning-overlay')) return;
+        if (document.querySelector('.luatools-playable-warning-overlay')) return;
 
         ensureMLZStyles();
         ensureFontAwesome();
 
         const overlay = document.createElement('div');
-        overlay.className = 'MLZ-playable-warning-overlay MLZ-overlay';
+        overlay.className = 'luatools-playable-warning-overlay luatools-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);z-index:100001;display:flex;align-items:center;justify-content:center;';
 
         const modal = document.createElement('div');
@@ -4339,7 +4339,7 @@
 
         const cancelBtn = document.createElement('a');
         cancelBtn.href = '#';
-        cancelBtn.className = 'MLZ-btn';
+        cancelBtn.className = 'luatools-btn';
         cancelBtn.style.flex = '1';
         cancelBtn.innerHTML = `<span>${lt('Cancel')}</span>`;
         cancelBtn.onclick = function (e) {
@@ -4352,7 +4352,7 @@
 
         const proceedBtn = document.createElement('a');
         proceedBtn.href = '#';
-        proceedBtn.className = 'MLZ-btn primary';
+        proceedBtn.className = 'luatools-btn primary';
         proceedBtn.style.flex = '1';
         proceedBtn.innerHTML = `<span>${lt('Proceed')}</span>`;
         proceedBtn.onclick = function (e) {
@@ -4391,13 +4391,13 @@
 
     // Millennium disclaimer modal
     function showMillenniumDisclaimerModal() {
-        if (document.querySelector('.MLZ-disclaimer-overlay')) return;
+        if (document.querySelector('.luatools-disclaimer-overlay')) return;
 
         ensureMLZStyles();
         ensureFontAwesome();
 
         const overlay = document.createElement('div');
-        overlay.className = 'MLZ-disclaimer-overlay MLZ-overlay';
+        overlay.className = 'luatools-disclaimer-overlay luatools-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:100005;display:flex;align-items:center;justify-content:center;';
 
         const modal = document.createElement('div');
@@ -4461,7 +4461,7 @@
 
         const confirmBtn = document.createElement('a');
         confirmBtn.href = '#';
-        confirmBtn.className = 'MLZ-btn primary';
+        confirmBtn.className = 'luatools-btn primary';
         confirmBtn.style.minWidth = 'auto';
         confirmBtn.style.background = '#FFEA00';
         confirmBtn.style.color = '#000';
@@ -4486,7 +4486,7 @@
         confirmBtn.onclick = function (e) {
             e.preventDefault();
             if (input.value.trim().toLowerCase() === expectedPhrase) {
-                localStorage.setItem('MLZ millennium disclaimer accepted', '1');
+                localStorage.setItem('luatools millennium disclaimer accepted', '1');
                 overlay.remove();
             }
         };
@@ -4514,13 +4514,13 @@
 
     // Ensure consistent spacing for our buttons
     function ensureStyles() {
-        if (!document.getElementById('MLZ-spacing-styles')) {
+        if (!document.getElementById('luatools-spacing-styles')) {
             const style = document.createElement('style');
-            style.id = 'MLZ-spacing-styles';
+            style.id = 'luatools-spacing-styles';
             style.textContent = `
-                .MLZ-restart-button, .MLZ-icon-button { margin-left: 6px !important; margin-right: 0 !important; }
-                .MLZ-button { margin-right: 0 !important; position: relative !important; }
-                .MLZ-pills-container {
+                .luatools-restart-button, .luatools-icon-button { margin-left: 6px !important; margin-right: 0 !important; }
+                .luatools-button { margin-right: 0 !important; position: relative !important; }
+                .luatools-pills-container {
                     position: absolute !important;
                     top: -25px !important;
                     left: 50% !important;
@@ -4532,7 +4532,7 @@
                     z-index: 10;
                     white-space: nowrap;
                 }
-                .MLZ-pill {
+                .luatools-pill {
                     padding: 2px 6px;
                     border-radius: 4px;
                     font-size: 9px;
@@ -4546,11 +4546,11 @@
                     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
                     cursor: default;
                 }
-                .MLZ-pill.red { background: rgba(255, 80, 80, 0.15); color: #ff5050; border: 1px solid rgba(255, 80, 80, 0.3); }
-                .MLZ-pill.green { background: rgba(92, 184, 92, 0.15); color: #5cb85c; border: 1px solid rgba(92, 184, 92, 0.3); }
-                .MLZ-pill.yellow { background: rgba(255, 193, 7, 0.15); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.3); }
-                .MLZ-pill.orange { background: rgba(255, 136, 0, 0.15); color: #ff8800; border: 1px solid rgba(255, 136, 0, 0.3); }
-                .MLZ-pill.gray { background: rgba(150, 150, 150, 0.15); color: #a0a0a0; border: 1px solid rgba(150, 150, 150, 0.3); }
+                .luatools-pill.red { background: rgba(255, 80, 80, 0.15); color: #ff5050; border: 1px solid rgba(255, 80, 80, 0.3); }
+                .luatools-pill.green { background: rgba(92, 184, 92, 0.15); color: #5cb85c; border: 1px solid rgba(92, 184, 92, 0.3); }
+                .luatools-pill.yellow { background: rgba(255, 193, 7, 0.15); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.3); }
+                .luatools-pill.orange { background: rgba(255, 136, 0, 0.15); color: #ff8800; border: 1px solid rgba(255, 136, 0, 0.3); }
+                .luatools-pill.gray { background: rgba(150, 150, 150, 0.15); color: #a0a0a0; border: 1px solid rgba(150, 150, 150, 0.3); }
             `;
             document.head.appendChild(style); // This is now separate from the main style block
         }
@@ -4560,7 +4560,7 @@
     function updateButtonTranslations() {
         try {
             // Update Restart Steam button
-            const restartBtn = document.querySelector('.MLZ-restart-button');
+            const restartBtn = document.querySelector('.luatools-restart-button');
             if (restartBtn) {
                 const restartText = lt('Restart Steam');
                 restartBtn.title = restartText;
@@ -4572,12 +4572,12 @@
             }
 
             // Update Add via MLZ button
-            const MLZBtn = document.querySelector('.MLZ-button');
-            if (MLZBtn) {
+            const luatoolsBtn = document.querySelector('.luatools-button');
+            if (luatoolsBtn) {
                 const addViaText = lt('Add via MLZ');
-                MLZBtn.title = addViaText;
-                MLZBtn.setAttribute('data-tooltip-text', addViaText);
-                const span = MLZBtn.querySelector('span');
+                luatoolsBtn.title = addViaText;
+                luatoolsBtn.setAttribute('data-tooltip-text', addViaText);
+                const span = luatoolsBtn.querySelector('span');
                 if (span) {
                     span.textContent = addViaText;
                 }
@@ -4621,12 +4621,12 @@
         const isAppPath = window.location.pathname.includes('/app/');
         if (!isAppPath) {
             const headerContainer = document.querySelector('._1wn1lBlAzl3HMRqS1llwie');
-            if (headerContainer && !document.querySelector('.MLZ-header-button') && !window.__MLZHeaderInserted) {
+            if (headerContainer && !document.querySelector('.luatools-header-button') && !window.__MLZHeaderInserted) {
                 ensureMLZStyles();
                 const headerBtn = document.createElement('a');
                 headerBtn.href = '#';
-                // Use MLZ-btn primary class for that premium modal look
-                headerBtn.className = 'MLZ-btn primary MLZ-header-button Focusable';
+                // Use luatools-btn primary class for that premium modal look
+                headerBtn.className = 'luatools-btn primary luatools-header-button Focusable';
                 headerBtn.style.cssText = 'margin-left:12px; display:inline-flex; align-items:center; justify-content:center; align-self:center; cursor:pointer; flex-shrink:0; width:36px; height:36px; padding:0; border-radius:8px; border-width:1px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);';
                 headerBtn.title = 'MLZ Settings';
 
@@ -4638,7 +4638,7 @@
                 img.style.verticalAlign = 'middle';
 
                 try {
-                    Millennium.callServerMethod('MLZ', 'GetIconDataUrl', {
+                    Millennium.callServerMethod('luatools', 'GetIconDataUrl', {
                         contentScriptQuery: ''
                     }).then(function (res) {
                         try {
@@ -4646,14 +4646,14 @@
                             if (payload && payload.success && payload.dataUrl) {
                                 img.src = payload.dataUrl;
                             } else {
-                                img.src = 'MLZ/MLZ-icon.png';
+                                img.src = 'MLZ/luatools-icon.png';
                             }
                         } catch (_) {
-                            img.src = 'MLZ/MLZ-icon.png';
+                            img.src = 'MLZ/luatools-icon.png';
                         }
                     });
                 } catch (_) {
-                    img.src = 'MLZ/MLZ-icon.png';
+                    img.src = 'MLZ/luatools-icon.png';
                 }
 
                 img.onerror = function () {
@@ -4695,7 +4695,7 @@
 
             // Insert a Restart Steam button between Community Hub and our MLZ button
             try {
-                if (!document.querySelector('.MLZ-restart-button') && !window.__MLZRestartInserted) {
+                if (!document.querySelector('.luatools-restart-button') && !window.__MLZRestartInserted) {
                     ensureStyles();
                     // In Big Picture mode, use queue button as reference; otherwise use first link in container
                     const referenceBtn = isBigPicture ?
@@ -4705,9 +4705,9 @@
                     // Use same custom button for both modes
                     const restartBtn = document.createElement('a');
                     if (referenceBtn && referenceBtn.className) {
-                        restartBtn.className = referenceBtn.className + ' MLZ-restart-button';
+                        restartBtn.className = referenceBtn.className + ' luatools-restart-button';
                     } else {
-                        restartBtn.className = 'btnv6_blue_hoverfade btn_medium MLZ-restart-button';
+                        restartBtn.className = 'btnv6_blue_hoverfade btn_medium luatools-restart-button';
                     }
                     restartBtn.href = '#';
                     const restartText = lt('Restart Steam');
@@ -4734,7 +4734,7 @@
                             showMLZConfirm('MLZ', lt('Restart Steam now?'),
                                 function () {
                                     try {
-                                        Millennium.callServerMethod('MLZ', 'RestartSteam', {
+                                        Millennium.callServerMethod('luatools', 'RestartSteam', {
                                             contentScriptQuery: ''
                                         });
                                     } catch (_) { }
@@ -4747,7 +4747,7 @@
                             showMLZConfirm('MLZ', lt('Restart Steam now?'),
                                 function () {
                                     try {
-                                        Millennium.callServerMethod('MLZ', 'RestartSteam', {
+                                        Millennium.callServerMethod('luatools', 'RestartSteam', {
                                             contentScriptQuery: ''
                                         });
                                     } catch (_) { }
@@ -4766,13 +4766,13 @@
                     }
                     // Insert icon button right after Restart (only once)
                     try {
-                        if (!document.querySelector('.MLZ-icon-button') && !window.__MLZIconInserted) {
+                        if (!document.querySelector('.luatools-icon-button') && !window.__MLZIconInserted) {
                             // Use same custom button for both modes
                             const iconBtn = document.createElement('a');
                             if (referenceBtn && referenceBtn.className) {
-                                iconBtn.className = referenceBtn.className + ' MLZ-icon-button';
+                                iconBtn.className = referenceBtn.className + ' luatools-icon-button';
                             } else {
-                                iconBtn.className = 'btnv6_blue_hoverfade btn_medium MLZ-icon-button';
+                                iconBtn.className = 'btnv6_blue_hoverfade btn_medium luatools-icon-button';
                             }
                             iconBtn.href = '#';
                             iconBtn.title = 'MLZ Helper';
@@ -4795,7 +4795,7 @@
                             img.style.verticalAlign = 'middle';
                             // Try to fetch data URL for the icon from backend to avoid path issues
                             try {
-                                Millennium.callServerMethod('MLZ', 'GetIconDataUrl', {
+                                Millennium.callServerMethod('luatools', 'GetIconDataUrl', {
                                     contentScriptQuery: ''
                                 }).then(function (res) {
                                     try {
@@ -4803,14 +4803,14 @@
                                         if (payload && payload.success && payload.dataUrl) {
                                             img.src = payload.dataUrl;
                                         } else {
-                                            img.src = 'MLZ/MLZ-icon.png';
+                                            img.src = 'MLZ/luatools-icon.png';
                                         }
                                     } catch (_) {
-                                        img.src = 'MLZ/MLZ-icon.png';
+                                        img.src = 'MLZ/luatools-icon.png';
                                     }
                                 });
                             } catch (_) {
-                                img.src = 'MLZ/MLZ-icon.png';
+                                img.src = 'MLZ/luatools-icon.png';
                             }
                             // If image fails, fallback to inline SVG gear
                             img.onerror = function () {
@@ -4836,7 +4836,7 @@
 
             // Status Pills Logic
             // Always update translations for existing buttons (even if not a page change)
-            const existingBtn = document.querySelector('.MLZ-button');
+            const existingBtn = document.querySelector('.luatools-button');
             if (existingBtn) {
                 ensureTranslationsLoaded(false).then(function () {
                     updateButtonTranslations();
@@ -4853,33 +4853,33 @@
                     steamdbContainer.querySelector('a');
 
                 // Use same custom button for both modes
-                const MLZButton = document.createElement('a');
-                MLZButton.href = '#';
+                const luatoolsButton = document.createElement('a');
+                luatoolsButton.href = '#';
                 // Copy classes from an existing button to match look-and-feel, but set our own label
                 if (referenceBtn && referenceBtn.className) {
-                    MLZButton.className = referenceBtn.className + ' MLZ-button';
+                    luatoolsButton.className = referenceBtn.className + ' luatools-button';
                 } else {
-                    MLZButton.className = 'btnv6_blue_hoverfade btn_medium MLZ-button';
+                    luatoolsButton.className = 'btnv6_blue_hoverfade btn_medium luatools-button';
                 }
                 const span = document.createElement('span');
                 const addViaText = lt('Add via MLZ');
                 span.textContent = addViaText;
-                MLZButton.appendChild(span);
+                luatoolsButton.appendChild(span);
                 // Tooltip/title
-                MLZButton.title = addViaText;
-                MLZButton.setAttribute('data-tooltip-text', addViaText);
+                luatoolsButton.title = addViaText;
+                luatoolsButton.setAttribute('data-tooltip-text', addViaText);
 
                 // Normalize margins to match native buttons
                 try {
                     if (referenceBtn) {
                         const cs = window.getComputedStyle(referenceBtn);
-                        MLZButton.style.marginLeft = cs.marginLeft;
-                        MLZButton.style.marginRight = cs.marginRight;
+                        luatoolsButton.style.marginLeft = cs.marginLeft;
+                        luatoolsButton.style.marginRight = cs.marginRight;
                     }
                 } catch (_) { }
 
                 // Local click handler suppressed; delegated handler manages actions
-                MLZButton.addEventListener('click', function (e) {
+                luatoolsButton.addEventListener('click', function (e) {
                     e.preventDefault();
                     backendLog('MLZ button clicked (delegated handler will process)');
                 });
@@ -4896,7 +4896,7 @@
                         window.__MLZPresenceCheckInFlight = true;
                         window.__MLZPresenceCheckAppId = appid;
                         window.__MLZCurrentAppId = appid;
-                        Millennium.callServerMethod('MLZ', 'HasMLZForApp', {
+                        Millennium.callServerMethod('luatools', 'HasMLZForApp', {
                             appid,
                             contentScriptQuery: ''
                         }).then(function (res) {
@@ -4908,26 +4908,26 @@
                                     return; // do not insert
                                 }
                                 // Re-check in case another caller inserted during async
-                                if (!document.querySelector('.MLZ-button') && !window.__MLZButtonInserted) {
+                                if (!document.querySelector('.luatools-button') && !window.__MLZButtonInserted) {
                                     // Insert after icon button (order: Restart → Icon → Add)
-                                    const iconExisting = steamdbContainer.querySelector('.MLZ-icon-button');
-                                    const restartExisting = steamdbContainer.querySelector('.MLZ-restart-button');
+                                    const iconExisting = steamdbContainer.querySelector('.luatools-icon-button');
+                                    const restartExisting = steamdbContainer.querySelector('.luatools-restart-button');
                                     if (iconExisting && iconExisting.before) {
-                                        iconExisting.before(MLZButton);
+                                        iconExisting.before(luatoolsButton);
                                     } else if (restartExisting && restartExisting.after) {
-                                        restartExisting.after(MLZButton);
+                                        restartExisting.after(luatoolsButton);
                                     } else if (referenceBtn && referenceBtn.after) {
-                                        referenceBtn.after(MLZButton);
+                                        referenceBtn.after(luatoolsButton);
                                     } else {
-                                        steamdbContainer.appendChild(MLZButton);
+                                        steamdbContainer.appendChild(luatoolsButton);
                                     }
                                     window.__MLZButtonInserted = true;
                                     backendLog('MLZ button inserted');
                                 }
                                 window.__MLZPresenceCheckInFlight = false;
                             } catch (_) {
-                                if (!document.querySelector('.MLZ-button') && !window.__MLZButtonInserted) {
-                                    steamdbContainer.appendChild(MLZButton);
+                                if (!document.querySelector('.luatools-button') && !window.__MLZButtonInserted) {
+                                    steamdbContainer.appendChild(luatoolsButton);
                                     window.__MLZButtonInserted = true;
                                     backendLog('MLZ button inserted');
                                 }
@@ -4935,32 +4935,32 @@
                             }
                         });
                     } else {
-                        if (!document.querySelector('.MLZ-button') && !window.__MLZButtonInserted) {
+                        if (!document.querySelector('.luatools-button') && !window.__MLZButtonInserted) {
                             // Insert after icon button (order: Restart → Icon → Add)
-                            const iconExisting = steamdbContainer.querySelector('.MLZ-icon-button');
-                            const restartExisting = steamdbContainer.querySelector('.MLZ-restart-button');
+                            const iconExisting = steamdbContainer.querySelector('.luatools-icon-button');
+                            const restartExisting = steamdbContainer.querySelector('.luatools-restart-button');
                             if (iconExisting && iconExisting.before) {
-                                iconExisting.before(MLZButton);
+                                iconExisting.before(luatoolsButton);
                             } else if (restartExisting && restartExisting.after) {
-                                restartExisting.after(MLZButton);
+                                restartExisting.after(luatoolsButton);
                             } else if (referenceBtn && referenceBtn.after) {
-                                referenceBtn.after(MLZButton);
+                                referenceBtn.after(luatoolsButton);
                             } else {
-                                steamdbContainer.appendChild(MLZButton);
+                                steamdbContainer.appendChild(luatoolsButton);
                             }
                             window.__MLZButtonInserted = true;
                             backendLog('MLZ button inserted');
                         }
                     }
                 } catch (_) {
-                    if (!document.querySelector('.MLZ-button') && !window.__MLZButtonInserted) {
-                        const restartExisting = steamdbContainer.querySelector('.MLZ-restart-button');
+                    if (!document.querySelector('.luatools-button') && !window.__MLZButtonInserted) {
+                        const restartExisting = steamdbContainer.querySelector('.luatools-restart-button');
                         if (restartExisting && restartExisting.after) {
-                            restartExisting.after(MLZButton);
+                            restartExisting.after(luatoolsButton);
                         } else if (referenceBtn && referenceBtn.after) {
-                            referenceBtn.after(MLZButton);
+                            referenceBtn.after(luatoolsButton);
                         } else {
-                            steamdbContainer.appendChild(MLZButton);
+                            steamdbContainer.appendChild(luatoolsButton);
                         }
                         window.__MLZButtonInserted = true;
                         backendLog('MLZ button inserted');
@@ -4974,20 +4974,20 @@
                 const appid = match ? parseInt(match[1], 10) : (window.__MLZCurrentAppId || NaN);
 
                 if (!isNaN(appid)) {
-                    const pillBtn = steamdbContainer.querySelector('.MLZ-button');
+                    const pillBtn = steamdbContainer.querySelector('.luatools-button');
                     if (pillBtn) {
                         // Skip if pills already built for this appid
-                        var existingPills = pillBtn.querySelector('.MLZ-pills-container');
+                        var existingPills = pillBtn.querySelector('.luatools-pills-container');
                         if (!(existingPills && existingPills.dataset.appid === String(appid) && existingPills.dataset.content)) {
                             fetchGamesDatabase().then(function (db) {
-                                const btn = steamdbContainer.querySelector('.MLZ-button');
+                                const btn = steamdbContainer.querySelector('.luatools-button');
                                 if (!btn) return;
 
-                                let pillsContainer = btn.querySelector('.MLZ-pills-container');
+                                let pillsContainer = btn.querySelector('.luatools-pills-container');
 
                                 if (!pillsContainer) {
                                     pillsContainer = document.createElement('div');
-                                    pillsContainer.className = 'MLZ-pills-container';
+                                    pillsContainer.className = 'luatools-pills-container';
                                     btn.appendChild(pillsContainer);
                                 }
                                 pillsContainer.dataset.appid = String(appid);
@@ -5030,7 +5030,7 @@
 
                                     if (status !== 'untested') {
                                         const pill = document.createElement('span');
-                                        pill.className = 'MLZ-pill';
+                                        pill.className = 'luatools-pill';
                                         if (status === 'playable') {
                                             pill.classList.add('green');
                                             pill.textContent = t('gameStatus.playable', 'Playable');
@@ -5045,7 +5045,7 @@
                                     }
 
                                     // reset button state
-                                    const btn = steamdbContainer.querySelector('.MLZ-button');
+                                    const btn = steamdbContainer.querySelector('.luatools-button');
                                     if (btn) {
                                         btn.style.opacity = '';
                                         btn.style.pointerEvents = '';
@@ -5058,7 +5058,7 @@
 
                                     if (showDenuvoPill) {
                                         const pill = document.createElement('span');
-                                        pill.className = 'MLZ-pill orange';
+                                        pill.className = 'luatools-pill orange';
                                         pill.textContent = t('gameStatus.denuvo', 'Denuvo');
                                         pillsContainer.appendChild(pill);
                                     }
@@ -5090,7 +5090,7 @@
                 // Show disclaimer after translations are loaded so it displays in the correct language
                 try {
                     if (window.location.hostname === 'store.steampowered.com') {
-                        if (localStorage.getItem('MLZ millennium disclaimer accepted') !== '1') {
+                        if (localStorage.getItem('luatools millennium disclaimer accepted') !== '1') {
                             showMillenniumDisclaimerModal();
                         }
                     }
@@ -5114,27 +5114,27 @@
                 // Only show visual hint in Big Picture mode
                 if (window.__LUATOOLS_IS_BIG_PICTURE__) {
                     const hint = document.createElement('div');
-                    hint.id = 'MLZ-gamepad-hint';
+                    hint.id = 'luatools-gamepad-hint';
                     hint.innerHTML = '🎮 ' + lt('bigpicture.mouseTip');
                     hint.style.cssText = '\
                         position: fixed;\
                         bottom: 20px;\
                         right: 20px;\
                         background: rgba(11, 20, 30, 0.9);\
-                        color: #a855f7;\
+                        color: #66c0f4;\
                         padding: 12px 16px;\
                         border-radius: 8px;\
                         font-size: 14px;\
                         z-index: 99998;\
-                        border: 1px solid rgba(168, 85, 247, 0.3);\
+                        border: 1px solid rgba(102, 192, 244, 0.3);\
                         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);\
                         animation: fadeInOut 3s ease-in-out;\
                     ';
 
                     // Add CSS animation if not already present
-                    if (!document.querySelector('#MLZ-gamepad-hint-styles')) {
+                    if (!document.querySelector('#luatools-gamepad-hint-styles')) {
                         const style = document.createElement('style');
-                        style.id = 'MLZ-gamepad-hint-styles';
+                        style.id = 'luatools-gamepad-hint-styles';
                         style.textContent = '\
                             @keyframes fadeInOut {\
                                 0% { opacity: 0; transform: translateY(10px); }\
@@ -5161,7 +5161,7 @@
         // Ask backend if there is a queued startup message from InitApis
         try {
             if (typeof Millennium !== 'undefined' && typeof Millennium.callServerMethod === 'function') {
-                Millennium.callServerMethod('MLZ', 'GetInitApisMessage', {
+                Millennium.callServerMethod('luatools', 'GetInitApisMessage', {
                     contentScriptQuery: ''
                 }).then(function (res) {
                     try {
@@ -5176,7 +5176,7 @@
                                 showMLZConfirm('MLZ', msg, function () {
                                     // User clicked Confirm - restart Steam
                                     try {
-                                        Millennium.callServerMethod('MLZ', 'RestartSteam', {
+                                        Millennium.callServerMethod('luatools', 'RestartSteam', {
                                             contentScriptQuery: ''
                                         });
                                     } catch (_) { }
@@ -5195,7 +5195,7 @@
                     if (window.location.hostname === 'store.steampowered.com') {
                         if (!sessionStorage.getItem('MLZLoadedAppsGate')) {
                             sessionStorage.setItem('MLZLoadedAppsGate', '1');
-                            Millennium.callServerMethod('MLZ', 'ReadLoadedApps', {
+                            Millennium.callServerMethod('luatools', 'ReadLoadedApps', {
                                 contentScriptQuery: ''
                             }).then(function (res) {
                                 try {
@@ -5224,7 +5224,7 @@
         // Quick exit if target doesn't have closest method or isn't an element
         if (!evt.target || !evt.target.closest) return;
 
-        const anchor = evt.target.closest('.MLZ-button');
+        const anchor = evt.target.closest('.luatools-button');
         if (anchor) {
             evt.preventDefault();
             evt.stopPropagation(); // Stop propagation to avoid conflicts
@@ -5240,12 +5240,12 @@
 
                     // Helper that continues with the normal add flow
                     const continueWithAdd = function () {
-                        if (!document.querySelector('.MLZ-overlay')) {
+                        if (!document.querySelector('.luatools-overlay')) {
                             showTestPopup();
                         }
                         runState.inProgress = true;
                         runState.appid = appid;
-                        Millennium.callServerMethod('MLZ', 'StartAddViaMLZ', {
+                        Millennium.callServerMethod('luatools', 'StartAddViaMLZ', {
                             appid,
                             contentScriptQuery: ''
                         });
@@ -5304,7 +5304,7 @@
                 return;
             }
             try {
-                Millennium.callServerMethod('MLZ', 'GetAddViaMLZStatus', {
+                Millennium.callServerMethod('luatools', 'GetAddViaMLZStatus', {
                     appid,
                     contentScriptQuery: ''
                 }).then(function (res) {
@@ -5313,19 +5313,19 @@
                         const st = payload && payload.state ? payload.state : {};
 
                         // Try to find overlay (may or may not be visible)
-                        const overlay = document.querySelector('.MLZ-overlay');
-                        const title = overlay ? overlay.querySelector('.MLZ-title') : null;
-                        const status = overlay ? overlay.querySelector('.MLZ-status') : null;
-                        const wrap = overlay ? overlay.querySelector('.MLZ-progress-wrap') : null;
-                        const progressInfo = overlay ? overlay.querySelector('.MLZ-progress-info') : null;
-                        const percent = overlay ? overlay.querySelector('.MLZ-percent') : null;
-                        const downloadSize = overlay ? overlay.querySelector('.MLZ-download-size') : null;
-                        const bar = overlay ? overlay.querySelector('.MLZ-progress-bar') : null;
+                        const overlay = document.querySelector('.luatools-overlay');
+                        const title = overlay ? overlay.querySelector('.luatools-title') : null;
+                        const status = overlay ? overlay.querySelector('.luatools-status') : null;
+                        const wrap = overlay ? overlay.querySelector('.luatools-progress-wrap') : null;
+                        const progressInfo = overlay ? overlay.querySelector('.luatools-progress-info') : null;
+                        const percent = overlay ? overlay.querySelector('.luatools-percent') : null;
+                        const downloadSize = overlay ? overlay.querySelector('.luatools-download-size') : null;
+                        const bar = overlay ? overlay.querySelector('.luatools-progress-bar') : null;
 
                         // Update individual API status in the list
                         if (overlay) {
                             const colors = getThemeColors();
-                            const apiItems = overlay.querySelectorAll('.MLZ-api-item');
+                            const apiItems = overlay.querySelectorAll('.luatools-api-item');
 
                             // Track successful API when download/processing starts
                             if ((st.status === 'downloading' || st.status === 'processing' || st.status === 'installing' || st.status === 'done') && st.currentApi && !successfulApi) {
@@ -5335,7 +5335,7 @@
                                 let foundSuccessful = false;
                                 apiItems.forEach((item) => {
                                     const apiName = item.getAttribute('data-api-name');
-                                    const apiStatus = item.querySelector('.MLZ-api-status');
+                                    const apiStatus = item.querySelector('.luatools-api-status');
                                     if (!apiStatus) return;
 
                                     if (apiName === successfulApi) {
@@ -5374,7 +5374,7 @@
                             if (st.status === 'checking' && st.currentApi && st.currentApi !== lastCheckedApi && lastCheckedApi) {
                                 apiItems.forEach((item) => {
                                     const apiName = item.getAttribute('data-api-name');
-                                    const apiStatus = item.querySelector('.MLZ-api-status');
+                                    const apiStatus = item.querySelector('.luatools-api-status');
                                     if (!apiStatus) return;
 
                                     if (apiName === lastCheckedApi) {
@@ -5389,7 +5389,7 @@
                             if (st.status === 'checking' && st.currentApi) {
                                 apiItems.forEach((item) => {
                                     const apiName = item.getAttribute('data-api-name');
-                                    const apiStatus = item.querySelector('.MLZ-api-status');
+                                    const apiStatus = item.querySelector('.luatools-api-status');
                                     if (!apiStatus) return;
 
                                     if (apiName === st.currentApi) {
@@ -5406,7 +5406,7 @@
                             if (st.apiErrors && typeof st.apiErrors === 'object') {
                                 apiItems.forEach((item) => {
                                     const apiName = item.getAttribute('data-api-name');
-                                    const apiStatus = item.querySelector('.MLZ-api-status');
+                                    const apiStatus = item.querySelector('.luatools-api-status');
                                     if (!apiStatus || !apiName) return;
 
                                     const apiError = st.apiErrors[apiName];
@@ -5481,7 +5481,7 @@
                                 }
                             }
                             // Show Cancel button during download
-                            const cancelBtn = overlay ? overlay.querySelector('.MLZ-cancel-btn') : null;
+                            const cancelBtn = overlay ? overlay.querySelector('.luatools-cancel-btn') : null;
                             if (cancelBtn && st.status === 'downloading') cancelBtn.style.display = '';
                         }
                         if (st.status === 'done') {
@@ -5491,9 +5491,9 @@
                             if (percent) percent.textContent = '100%';
                             if (status) status.textContent = lt('Game added!');
                             // Hide Cancel button and update Hide to Close
-                            const cancelBtn = overlay ? overlay.querySelector('.MLZ-cancel-btn') : null;
+                            const cancelBtn = overlay ? overlay.querySelector('.luatools-cancel-btn') : null;
                             if (cancelBtn) cancelBtn.style.display = 'none';
-                            const hideBtn = overlay ? overlay.querySelector('.MLZ-hide-btn') : null;
+                            const hideBtn = overlay ? overlay.querySelector('.luatools-hide-btn') : null;
                             if (hideBtn) hideBtn.innerHTML = '<span>' + lt('Close') + '</span>';
                             // hide progress visuals after a short beat
                             if (wrap || progressInfo) {
@@ -5507,7 +5507,7 @@
                             runState.inProgress = false;
                             runState.appid = null;
                             // Remove button since game is added (works even if popup is hidden)
-                            const btnEl = document.querySelector('.MLZ-button');
+                            const btnEl = document.querySelector('.luatools-button');
                             if (btnEl && btnEl.parentElement) {
                                 btnEl.parentElement.removeChild(btnEl);
                             }
@@ -5516,10 +5516,10 @@
                             // Mark all APIs as not found when failed (unless they have error status)
                             if (overlay && !successfulApi) {
                                 const colors = getThemeColors();
-                                const apiItems = overlay.querySelectorAll('.MLZ-api-item');
+                                const apiItems = overlay.querySelectorAll('.luatools-api-item');
                                 apiItems.forEach((item) => {
                                     const apiName = item.getAttribute('data-api-name');
-                                    const apiStatus = item.querySelector('.MLZ-api-status');
+                                    const apiStatus = item.querySelector('.luatools-api-status');
                                     if (!apiStatus) return;
 
                                     // Skip if this API already has an error status
@@ -5549,9 +5549,9 @@
                             // show error in the popup if visible
                             if (status) status.textContent = lt('Failed: {error}').replace('{error}', st.error || lt('Unknown error'));
                             // Hide Cancel button and update Hide to Close
-                            const cancelBtn = overlay ? overlay.querySelector('.MLZ-cancel-btn') : null;
+                            const cancelBtn = overlay ? overlay.querySelector('.luatools-cancel-btn') : null;
                             if (cancelBtn) cancelBtn.style.display = 'none';
-                            const hideBtn = overlay ? overlay.querySelector('.MLZ-hide-btn') : null;
+                            const hideBtn = overlay ? overlay.querySelector('.luatools-hide-btn') : null;
                             if (hideBtn) hideBtn.innerHTML = '<span>' + lt('Close') + '</span>';
                             if (wrap) wrap.style.display = 'none';
                             if (progressInfo) progressInfo.style.display = 'none';
@@ -5672,14 +5672,14 @@
 
     function showLoadedAppsPopup(apps) {
         // Avoid duplicates
-        if (document.querySelector('.MLZ-loadedapps-overlay')) return;
+        if (document.querySelector('.luatools-loadedapps-overlay')) return;
         ensureFontAwesome();
         ensureMLZStyles();
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease-out;';
-        overlay.className = 'MLZ-loadedapps-overlay';
+        overlay.className = 'luatools-loadedapps-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease-out;';
-        overlay.className = 'MLZ-loadedapps-overlay';
+        overlay.className = 'luatools-loadedapps-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;';
         const modal = document.createElement('div');
         const loadedAppsModalColors = getThemeColors();
@@ -5723,7 +5723,7 @@
                     e.preventDefault();
                     const url = 'https://steamdb.info/app/' + String(item.appid) + '/';
                     try {
-                        Millennium.callServerMethod('MLZ', 'OpenExternalUrl', {
+                        Millennium.callServerMethod('luatools', 'OpenExternalUrl', {
                             url,
                             contentScriptQuery: ''
                         });
@@ -5742,13 +5742,13 @@
         instructionText.style.cssText = 'font-size:12px;color:#8f98a0;';
         instructionText.textContent = lt('Left click to install, Right click for SteamDB');
         const dismissBtn = document.createElement('a');
-        dismissBtn.className = 'MLZ-btn';
+        dismissBtn.className = 'luatools-btn';
         dismissBtn.innerHTML = '<span>' + lt('Dismiss') + '</span>';
         dismissBtn.href = '#';
         dismissBtn.onclick = function (e) {
             e.preventDefault();
             try {
-                Millennium.callServerMethod('MLZ', 'DismissLoadedApps', {
+                Millennium.callServerMethod('luatools', 'DismissLoadedApps', {
                     contentScriptQuery: ''
                 });
             } catch (_) { }

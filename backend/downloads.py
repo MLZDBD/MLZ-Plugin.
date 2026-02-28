@@ -1,4 +1,4 @@
-"""Handling of MLZ add/download flows and related utilities."""
+"""Handling of LuaTools add/download flows and related utilities."""
 
 from __future__ import annotations
 
@@ -46,11 +46,11 @@ APPLIST_DATA: Dict[int, str] = {}
 APPLIST_LOADED = False
 APPLIST_LOCK = threading.Lock()
 APPLIST_FILE_NAME = "all-appids.json"
-APPLIST_URL = ""
+APPLIST_URL = "https://applist.morrenus.xyz/"
 APPLIST_DOWNLOAD_TIMEOUT = 300  # 5 minutes for large file
 
 GAMES_DB_FILE_NAME = "games.json"
-GAMES_DB_URL = ""
+GAMES_DB_URL = "https://toolsdb.piqseu.cc/games.json"
 
 # In-memory games database cache and lock (defined to avoid undefined variable)
 GAMES_DB_DATA: Dict[int, Any] = {}
@@ -114,12 +114,12 @@ def _fetch_app_name(appid: int) -> str:
     if sleep_time > 0:
         time.sleep(sleep_time)
 
-    client = ensure_http_client("MLZ: _fetch_app_name")
+    client = ensure_http_client("LuaTools: _fetch_app_name")
     try:
         url = f"https://store.steampowered.com/api/appdetails?appids={appid}"
-        logger.log(f"MLZ: Fetching app name for {appid} from Steam API")
+        logger.log(f"LuaTools: Fetching app name for {appid} from Steam API")
         resp = client.get(url, follow_redirects=True, timeout=10)
-        logger.log(f"MLZ: Steam API response for {appid}: status={resp.status_code}")
+        logger.log(f"LuaTools: Steam API response for {appid}: status={resp.status_code}")
         resp.raise_for_status()
         data = resp.json()
         entry = data.get(str(appid)) or {}
@@ -133,7 +133,7 @@ def _fetch_app_name(appid: int) -> str:
                     APP_NAME_CACHE[appid] = name
                 return name
     except Exception as exc:
-        logger.warn(f"MLZ: _fetch_app_name failed for {appid}: {exc}")
+        logger.warn(f"LuaTools: _fetch_app_name failed for {appid}: {exc}")
 
     # Cache empty result to avoid repeated failed attempts
     with APP_NAME_CACHE_LOCK:
@@ -154,7 +154,7 @@ def _append_loaded_app(appid: int, name: str) -> None:
         with open(path, "w", encoding="utf-8") as handle:
             handle.write("\n".join(lines) + "\n")
     except Exception as exc:
-        logger.warn(f"MLZ: _append_loaded_app failed for {appid}: {exc}")
+        logger.warn(f"LuaTools: _append_loaded_app failed for {appid}: {exc}")
 
 
 def _remove_loaded_app(appid: int) -> None:
@@ -170,7 +170,7 @@ def _remove_loaded_app(appid: int) -> None:
             with open(path, "w", encoding="utf-8") as handle:
                 handle.write("\n".join(new_lines) + ("\n" if new_lines else ""))
     except Exception as exc:
-        logger.warn(f"MLZ: _remove_loaded_app failed for {appid}: {exc}")
+        logger.warn(f"LuaTools: _remove_loaded_app failed for {appid}: {exc}")
 
 
 def _log_appid_event(action: str, appid: int, name: str) -> None:
@@ -180,7 +180,7 @@ def _log_appid_event(action: str, appid: int, name: str) -> None:
         with open(_appid_log_path(), "a", encoding="utf-8") as handle:
             handle.write(line)
     except Exception as exc:
-        logger.warn(f"MLZ: _log_appid_event failed: {exc}")
+        logger.warn(f"LuaTools: _log_appid_event failed: {exc}")
 
 
 def _preload_app_names_cache() -> None:
@@ -219,7 +219,7 @@ def _preload_app_names_cache() -> None:
                         except (ValueError, IndexError):
                             continue
     except Exception as exc:
-        logger.warn(f"MLZ: _preload_app_names_cache from logs failed: {exc}")
+        logger.warn(f"LuaTools: _preload_app_names_cache from logs failed: {exc}")
 
     # Then, load from loaded_apps.txt (current state - overrides log if present)
     try:
@@ -238,14 +238,14 @@ def _preload_app_names_cache() -> None:
                         except (ValueError, IndexError):
                             continue
     except Exception as exc:
-        logger.warn(f"MLZ: _preload_app_names_cache from loaded_apps failed: {exc}")
+        logger.warn(f"LuaTools: _preload_app_names_cache from loaded_apps failed: {exc}")
     
     # Finally, load from applist file (as fallback source - doesn't override existing cache)
     # This ensures applist is available for lookups without web requests
     try:
         _load_applist_into_memory()
     except Exception as exc:
-        logger.warn(f"MLZ: _preload_app_names_cache from applist failed: {exc}")
+        logger.warn(f"LuaTools: _preload_app_names_cache from applist failed: {exc}")
 
 
 def _get_loaded_app_name(appid: int) -> str:
@@ -282,12 +282,12 @@ def _load_applist_into_memory() -> None:
         
         file_path = _applist_file_path()
         if not os.path.exists(file_path):
-            logger.log("MLZ: Applist file not found, skipping load")
+            logger.log("LuaTools: Applist file not found, skipping load")
             APPLIST_LOADED = True  # Mark as loaded to avoid repeated checks
             return
         
         try:
-            logger.log("MLZ: Loading applist into memory...")
+            logger.log("LuaTools: Loading applist into memory...")
             with open(file_path, "r", encoding="utf-8") as handle:
                 data = json.load(handle)
             
@@ -300,13 +300,13 @@ def _load_applist_into_memory() -> None:
                         if appid and name and isinstance(name, str) and name.strip():
                             APPLIST_DATA[int(appid)] = name.strip()
                             count += 1
-                logger.log(f"MLZ: Loaded {count} app names from applist into memory")
+                logger.log(f"LuaTools: Loaded {count} app names from applist into memory")
             else:
-                logger.warn("MLZ: Applist file has invalid format (expected array)")
+                logger.warn("LuaTools: Applist file has invalid format (expected array)")
             
             APPLIST_LOADED = True
         except Exception as exc:
-            logger.warn(f"MLZ: Failed to load applist into memory: {exc}")
+            logger.warn(f"LuaTools: Failed to load applist into memory: {exc}")
             APPLIST_LOADED = True  # Mark as loaded to avoid repeated failed attempts
 
 
@@ -325,35 +325,35 @@ def _ensure_applist_file() -> None:
     file_path = _applist_file_path()
     
     if os.path.exists(file_path):
-        logger.log("MLZ: Applist file already exists, skipping download")
+        logger.log("LuaTools: Applist file already exists, skipping download")
         return
     
-    logger.log("MLZ: Applist file not found, downloading...")
-    client = ensure_http_client("MLZ: DownloadApplist")
+    logger.log("LuaTools: Applist file not found, downloading...")
+    client = ensure_http_client("LuaTools: DownloadApplist")
     
     try:
-        logger.log(f"MLZ: Downloading applist from {APPLIST_URL}")
+        logger.log(f"LuaTools: Downloading applist from {APPLIST_URL}")
         resp = client.get(APPLIST_URL, follow_redirects=True, timeout=APPLIST_DOWNLOAD_TIMEOUT)
-        logger.log(f"MLZ: Applist download response: status={resp.status_code}")
+        logger.log(f"LuaTools: Applist download response: status={resp.status_code}")
         resp.raise_for_status()
         
         # Validate JSON format before saving
         try:
             data = resp.json()
             if not isinstance(data, list):
-                logger.warn("MLZ: Downloaded applist has invalid format (expected array)")
+                logger.warn("LuaTools: Downloaded applist has invalid format (expected array)")
                 return
         except json.JSONDecodeError as exc:
-            logger.warn(f"MLZ: Downloaded applist is not valid JSON: {exc}")
+            logger.warn(f"LuaTools: Downloaded applist is not valid JSON: {exc}")
             return
         
         # Save to file
         with open(file_path, "w", encoding="utf-8") as handle:
             json.dump(data, handle)
         
-        logger.log(f"MLZ: Successfully downloaded and saved applist file ({len(data)} entries)")
+        logger.log(f"LuaTools: Successfully downloaded and saved applist file ({len(data)} entries)")
     except Exception as exc:
-        logger.warn(f"MLZ: Failed to download applist file: {exc}")
+        logger.warn(f"LuaTools: Failed to download applist file: {exc}")
 
 
 def init_applist() -> None:
@@ -362,7 +362,7 @@ def init_applist() -> None:
         _ensure_applist_file()
         _load_applist_into_memory()
     except Exception as exc:
-        logger.warn(f"MLZ: Applist initialization failed: {exc}")
+        logger.warn(f"LuaTools: Applist initialization failed: {exc}")
 
 
 def _games_db_file_path() -> str:
@@ -381,19 +381,19 @@ def _load_games_db_into_memory() -> None:
         
         file_path = _games_db_file_path()
         if not os.path.exists(file_path):
-            logger.log("MLZ: Games DB file not found, skipping load")
+            logger.log("LuaTools: Games DB file not found, skipping load")
             GAMES_DB_LOADED = True
             return
         
         try:
-            logger.log("MLZ: Loading Games DB into memory...")
+            logger.log("LuaTools: Loading Games DB into memory...")
             with open(file_path, "r", encoding="utf-8") as handle:
                 GAMES_DB_DATA = json.load(handle)
             
-            logger.log(f"MLZ: Loaded Games DB ({len(GAMES_DB_DATA)} entries)")
+            logger.log(f"LuaTools: Loaded Games DB ({len(GAMES_DB_DATA)} entries)")
             GAMES_DB_LOADED = True
         except Exception as exc:
-            logger.warn(f"MLZ: Failed to load Games DB: {exc}")
+            logger.warn(f"LuaTools: Failed to load Games DB: {exc}")
             GAMES_DB_LOADED = True
 
 
@@ -419,16 +419,16 @@ def _ensure_games_db_file() -> None:
 
     # Skip download if file exists and is fresh
     if os.path.exists(file_path) and not _is_games_db_cache_stale():
-        logger.log("MLZ: Games DB cache is fresh, skipping download")
+        logger.log("LuaTools: Games DB cache is fresh, skipping download")
         return
 
-    logger.log("MLZ: Downloading Games DB (cache missing or stale)...")
-    client = ensure_http_client("MLZ: DownloadGamesDB")
+    logger.log("LuaTools: Downloading Games DB (cache missing or stale)...")
+    client = ensure_http_client("LuaTools: DownloadGamesDB")
     
     try:
-        logger.log(f"MLZ: Downloading Games DB from {GAMES_DB_URL}")
+        logger.log(f"LuaTools: Downloading Games DB from {GAMES_DB_URL}")
         resp = client.get(GAMES_DB_URL, follow_redirects=True, timeout=60)
-        logger.log(f"MLZ: Games DB download response: status={resp.status_code}")
+        logger.log(f"LuaTools: Games DB download response: status={resp.status_code}")
         resp.raise_for_status()
         
         data = resp.json()
@@ -436,9 +436,9 @@ def _ensure_games_db_file() -> None:
         with open(file_path, "w", encoding="utf-8") as handle:
             json.dump(data, handle)
         
-        logger.log(f"MLZ: Successfully downloaded Games DB")
+        logger.log(f"LuaTools: Successfully downloaded Games DB")
     except Exception as exc:
-        logger.warn(f"MLZ: Failed to download Games DB: {exc}")
+        logger.warn(f"LuaTools: Failed to download Games DB: {exc}")
 
 
 def init_games_db() -> None:
@@ -447,7 +447,7 @@ def init_games_db() -> None:
         _ensure_games_db_file()
         _load_games_db_into_memory()
     except Exception as exc:
-        logger.warn(f"MLZ: Games DB initialization failed: {exc}")
+        logger.warn(f"LuaTools: Games DB initialization failed: {exc}")
 
 
 def get_games_database() -> str:
@@ -490,11 +490,11 @@ def _process_and_install_lua(appid: int, zip_path: str) -> None:
                         out_path = os.path.join(depotcache_dir, pure)
                         with open(out_path, "wb") as manifest_file:
                             manifest_file.write(data)
-                        logger.log(f"MLZ: Extracted manifest -> {out_path}")
+                        logger.log(f"LuaTools: Extracted manifest -> {out_path}")
                 except Exception as manifest_exc:
-                    logger.warn(f"MLZ: Failed to extract manifest {name}: {manifest_exc}")
+                    logger.warn(f"LuaTools: Failed to extract manifest {name}: {manifest_exc}")
         except Exception as depot_exc:
-            logger.warn(f"MLZ: depotcache extraction failed: {depot_exc}")
+            logger.warn(f"LuaTools: depotcache extraction failed: {depot_exc}")
 
         candidates = []
         for name in names:
@@ -535,7 +535,7 @@ def _process_and_install_lua(appid: int, zip_path: str) -> None:
             raise RuntimeError("cancelled")
         with open(dest_file, "w", encoding="utf-8") as output:
             output.write(processed_text)
-        logger.log(f"MLZ: Installed lua -> {dest_file}")
+        logger.log(f"LuaTools: Installed lua -> {dest_file}")
         _set_download_state(appid, {"installedPath": dest_file})
 
     try:
@@ -561,10 +561,10 @@ def _is_download_cancelled(appid: int) -> bool:
 
 
 def _download_zip_for_app(appid: int):
-    client = ensure_http_client("MLZ: download")
+    client = ensure_http_client("LuaTools: download")
     apis = load_api_manifest()
     if not apis:
-        logger.warn("MLZ: No enabled APIs in manifest")
+        logger.warn("LuaTools: No enabled APIs in manifest")
         _set_download_state(appid, {"status": "failed", "error": "No APIs available"})
         return
 
@@ -588,7 +588,7 @@ def _download_zip_for_app(appid: int):
         if "<moapikey>" in template:
             if not morrenus_api_key:
                 # Skip this API silently if key is not set
-                logger.log(f"MLZ: Skipping API '{name}' - Morrenus API key not configured")
+                logger.log(f"LuaTools: Skipping API '{name}' - Morrenus API key not configured")
                 continue
             # Replace the placeholder with the actual key
             template = template.replace("<moapikey>", morrenus_api_key)
@@ -597,15 +597,15 @@ def _download_zip_for_app(appid: int):
         _set_download_state(
             appid, {"status": "checking", "currentApi": name, "bytesRead": 0, "totalBytes": 0}
         )
-        logger.log(f"MLZ: Trying API '{name}'")
+        logger.log(f"LuaTools: Trying API '{name}'")
         try:
             headers = {"User-Agent": USER_AGENT}
             if _is_download_cancelled(appid):
-                logger.log(f"MLZ: Download cancelled before contacting API '{name}'")
+                logger.log(f"LuaTools: Download cancelled before contacting API '{name}'")
                 return
             with client.stream("GET", url, headers=headers, follow_redirects=True) as resp:
                 code = resp.status_code
-                logger.log(f"MLZ: API '{name}' status={code}")
+                logger.log(f"LuaTools: API '{name}' status={code}")
                 if code == unavailable_code:
                     continue
                 if code != success_code:
@@ -622,19 +622,19 @@ def _download_zip_for_app(appid: int):
                         if not chunk:
                             continue
                         if _is_download_cancelled(appid):
-                            logger.log(f"MLZ: Download cancelled mid-stream for appid={appid}")
+                            logger.log(f"LuaTools: Download cancelled mid-stream for appid={appid}")
                             raise RuntimeError("cancelled")
                         output.write(chunk)
                         state = _get_download_state(appid)
                         read = int(state.get("bytesRead", 0)) + len(chunk)
                         _set_download_state(appid, {"bytesRead": read})
                         if _is_download_cancelled(appid):
-                            logger.log(f"MLZ: Download cancelled after writing chunk for appid={appid}")
+                            logger.log(f"LuaTools: Download cancelled after writing chunk for appid={appid}")
                             raise RuntimeError("cancelled")
-                logger.log(f"MLZ: Download complete -> {dest_path}")
+                logger.log(f"LuaTools: Download complete -> {dest_path}")
 
                 if _is_download_cancelled(appid):
-                    logger.log(f"MLZ: Download marked cancelled after completion for appid={appid}")
+                    logger.log(f"LuaTools: Download marked cancelled after completion for appid={appid}")
                     raise RuntimeError("cancelled")
 
                 try:
@@ -646,7 +646,7 @@ def _download_zip_for_app(appid: int):
                                 preview = check_f.read(512)
                                 content_preview = preview[:100].decode("utf-8", errors="ignore")
                             logger.warn(
-                                f"MLZ: API '{name}' returned non-zip file (magic={magic.hex()}, size={file_size}, preview={content_preview[:50]})"
+                                f"LuaTools: API '{name}' returned non-zip file (magic={magic.hex()}, size={file_size}, preview={content_preview[:50]})"
                             )
                             try:
                                 os.remove(dest_path)
@@ -654,10 +654,10 @@ def _download_zip_for_app(appid: int):
                                 pass
                             continue
                 except FileNotFoundError:
-                    logger.warn("MLZ: Downloaded file not found after download")
+                    logger.warn("LuaTools: Downloaded file not found after download")
                     continue
                 except Exception as validation_exc:
-                    logger.warn(f"MLZ: File validation failed for API '{name}': {validation_exc}")
+                    logger.warn(f"LuaTools: File validation failed for API '{name}': {validation_exc}")
                     try:
                         os.remove(dest_path)
                     except Exception:
@@ -666,12 +666,12 @@ def _download_zip_for_app(appid: int):
 
                 try:
                     if _is_download_cancelled(appid):
-                        logger.log(f"MLZ: Processing aborted due to cancellation for appid={appid}")
+                        logger.log(f"LuaTools: Processing aborted due to cancellation for appid={appid}")
                         raise RuntimeError("cancelled")
                     _set_download_state(appid, {"status": "processing"})
                     _process_and_install_lua(appid, dest_path)
                     if _is_download_cancelled(appid):
-                        logger.log(f"MLZ: Installation complete but marked cancelled for appid={appid}")
+                        logger.log(f"LuaTools: Installation complete but marked cancelled for appid={appid}")
                         raise RuntimeError("cancelled")
                     try:
                         fetched_name = _fetch_app_name(appid) or f"UNKNOWN ({appid})"
@@ -688,9 +688,9 @@ def _download_zip_for_app(appid: int):
                                 os.remove(dest_path)
                         except Exception:
                             pass
-                        logger.log(f"MLZ: Cancelled download cleanup complete for appid={appid}")
+                        logger.log(f"LuaTools: Cancelled download cleanup complete for appid={appid}")
                         return
-                    logger.warn(f"MLZ: Processing failed -> {install_exc}")
+                    logger.warn(f"LuaTools: Processing failed -> {install_exc}")
                     _set_download_state(
                         appid, {"status": "failed", "error": f"Processing failed: {install_exc}"}
                     )
@@ -706,13 +706,13 @@ def _download_zip_for_app(appid: int):
                         os.remove(dest_path)
                 except Exception:
                     pass
-                logger.log(f"MLZ: Download cancelled and cleaned up for appid={appid}")
+                logger.log(f"LuaTools: Download cancelled and cleaned up for appid={appid}")
                 return
-            logger.warn(f"MLZ: Runtime error during download for appid={appid}: {cancel_exc}")
+            logger.warn(f"LuaTools: Runtime error during download for appid={appid}: {cancel_exc}")
             _set_download_state(appid, {"status": "failed", "error": str(cancel_exc)})
             return
         except Exception as err:
-            logger.warn(f"MLZ: API '{name}' failed with error: {err}")
+            logger.warn(f"LuaTools: API '{name}' failed with error: {err}")
             # Track error for this API - check if it's a timeout
             error_type = "timeout" if isinstance(err, (httpx.TimeoutException, httpx.ReadTimeout, httpx.ConnectTimeout)) else "error"
             error_code = None
@@ -733,13 +733,13 @@ def _download_zip_for_app(appid: int):
     _set_download_state(appid, {"status": "failed", "error": "Not available on any API"})
 
 
-def start_add_via_MLZ(appid: int) -> str:
+def start_add_via_luatools(appid: int) -> str:
     try:
         appid = int(appid)
     except Exception:
         return json.dumps({"success": False, "error": "Invalid appid"})
 
-    logger.log(f"MLZ: StartAddViaMLZ appid={appid}")
+    logger.log(f"LuaTools: StartAddViaLuaTools appid={appid}")
     _set_download_state(appid, {"status": "queued", "bytesRead": 0, "totalBytes": 0})
     thread = threading.Thread(target=_download_zip_for_app, args=(appid,), daemon=True)
     thread.start()
@@ -783,7 +783,7 @@ def dismiss_loaded_apps() -> str:
         return json.dumps({"success": False, "error": str(exc)})
 
 
-def delete_MLZ_for_app(appid: int) -> str:
+def delete_luatools_for_app(appid: int) -> str:
     try:
         appid = int(appid)
     except Exception:
@@ -802,7 +802,7 @@ def delete_MLZ_for_app(appid: int) -> str:
                 os.remove(path)
                 deleted.append(path)
         except Exception as exc:
-            logger.warn(f"MLZ: Failed to delete {path}: {exc}")
+            logger.warn(f"LuaTools: Failed to delete {path}: {exc}")
     try:
         name = _get_loaded_app_name(appid) or _fetch_app_name(appid) or f"UNKNOWN ({appid})"
         _remove_loaded_app(appid)
@@ -824,11 +824,11 @@ def get_icon_data_url() -> str:
         b64 = base64.b64encode(data).decode("ascii")
         return json.dumps({"success": True, "dataUrl": f"data:image/png;base64,{b64}"})
     except Exception as exc:
-        logger.warn(f"MLZ: GetIconDataUrl failed: {exc}")
+        logger.warn(f"LuaTools: GetIconDataUrl failed: {exc}")
         return json.dumps({"success": False, "error": str(exc)})
 
 
-def has_MLZ_for_app(appid: int) -> str:
+def has_luatools_for_app(appid: int) -> str:
     try:
         appid = int(appid)
     except Exception:
@@ -837,7 +837,7 @@ def has_MLZ_for_app(appid: int) -> str:
     return json.dumps({"success": True, "exists": exists})
 
 
-def cancel_add_via_MLZ(appid: int) -> str:
+def cancel_add_via_luatools(appid: int) -> str:
     try:
         appid = int(appid)
     except Exception:
@@ -848,7 +848,7 @@ def cancel_add_via_MLZ(appid: int) -> str:
         return json.dumps({"success": True, "message": "Nothing to cancel"})
 
     _set_download_state(appid, {"status": "cancelled", "error": "Cancelled by user"})
-    logger.log(f"MLZ: Cancellation requested for appid={appid}")
+    logger.log(f"LuaTools: Cancellation requested for appid={appid}")
     return json.dumps({"success": True})
 
 
@@ -919,11 +919,11 @@ def get_installed_lua_scripts() -> str:
                         # Not a numeric filename, skip
                         continue
                     except Exception as exc:
-                        logger.warn(f"MLZ: Failed to process Lua file {filename}: {exc}")
+                        logger.warn(f"LuaTools: Failed to process Lua file {filename}: {exc}")
                         continue
 
         except Exception as exc:
-            logger.warn(f"MLZ: Failed to scan stplug-in directory: {exc}")
+            logger.warn(f"LuaTools: Failed to scan stplug-in directory: {exc}")
             return json.dumps({"success": False, "error": f"Failed to scan directory: {str(exc)}"})
 
         # Sort by appid
@@ -932,22 +932,22 @@ def get_installed_lua_scripts() -> str:
         return json.dumps({"success": True, "scripts": installed_scripts})
 
     except Exception as exc:
-        logger.warn(f"MLZ: Failed to get installed Lua scripts: {exc}")
+        logger.warn(f"LuaTools: Failed to get installed Lua scripts: {exc}")
         return json.dumps({"success": False, "error": str(exc)})
 
 
 __all__ = [
-    "cancel_add_via_MLZ",
-    "delete_MLZ_for_app",
+    "cancel_add_via_luatools",
+    "delete_luatools_for_app",
     "dismiss_loaded_apps",
     "fetch_app_name",
     "get_add_status",
     "get_games_database",
     "get_icon_data_url",
     "get_installed_lua_scripts",
-    "has_MLZ_for_app",
+    "has_luatools_for_app",
     "init_applist",
     "init_games_db",
     "read_loaded_apps",
-    "start_add_via_MLZ",
+    "start_add_via_luatools",
 ]

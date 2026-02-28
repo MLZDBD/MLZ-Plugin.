@@ -22,7 +22,7 @@ UNFIX_STATE: Dict[int, Dict[str, Any]] = {}
 UNFIX_LOCK = threading.Lock()
 
 # ── Fixes index cache (avoids HEAD requests to R2) ──────────────────────
-FIXES_INDEX_URL = ""
+FIXES_INDEX_URL = "https://index.luatools.work/fixes-index.json"
 _fixes_index_lock = threading.Lock()
 _fixes_index_cache: Optional[Dict] = None
 _fixes_index_fetched_at: float = 0
@@ -40,7 +40,7 @@ def _fetch_fixes_index() -> Optional[Dict]:
 
     # Fetch outside the lock to avoid blocking other threads
     try:
-        client = ensure_http_client("MLZ: FixesIndex")
+        client = ensure_http_client("LuaTools: FixesIndex")
         resp = client.get(FIXES_INDEX_URL, follow_redirects=True, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
@@ -50,12 +50,12 @@ def _fetch_fixes_index() -> Optional[Dict]:
             with _fixes_index_lock:
                 _fixes_index_cache = index
                 _fixes_index_fetched_at = time.time()
-            logger.log(f"MLZ: Fixes index loaded ({len(generic_set)} generic, {len(online_set)} online)")
+            logger.log(f"LuaTools: Fixes index loaded ({len(generic_set)} generic, {len(online_set)} online)")
             return index
         else:
-            logger.warn(f"MLZ: Fixes index fetch returned {resp.status_code}")
+            logger.warn(f"LuaTools: Fixes index fetch returned {resp.status_code}")
     except Exception as exc:
-        logger.warn(f"MLZ: Failed to fetch fixes index: {exc}")
+        logger.warn(f"LuaTools: Failed to fetch fixes index: {exc}")
 
     # Return stale cache if available
     with _fixes_index_lock:
@@ -110,14 +110,14 @@ def check_for_fixes(appid: int) -> str:
     try:
         result["gameName"] = fetch_app_name(appid) or f"Unknown Game ({appid})"
     except Exception as exc:
-        logger.warn(f"MLZ: Failed to fetch game name for {appid}: {exc}")
+        logger.warn(f"LuaTools: Failed to fetch game name for {appid}: {exc}")
         result["gameName"] = f"Unknown Game ({appid})"
 
     # Use the cached fixes index instead of HEAD requests to R2
     index = _fetch_fixes_index()
     if index is not None:
-        generic_url = f"https://files.MLZ.work/GameBypasses/{appid}.zip"
-        online_url = f"https://files.MLZ.work/OnlineFix1/{appid}.zip"
+        generic_url = f"https://files.luatools.work/GameBypasses/{appid}.zip"
+        online_url = f"https://files.luatools.work/OnlineFix1/{appid}.zip"
 
         if appid in index["generic"]:
             result["genericFix"]["status"] = 200
@@ -133,45 +133,45 @@ def check_for_fixes(appid: int) -> str:
         else:
             result["onlineFix"]["status"] = 404
 
-        logger.log(f"MLZ: Fix check for {appid} via index: generic={appid in index['generic']}, online={appid in index['online']}")
+        logger.log(f"LuaTools: Fix check for {appid} via index: generic={appid in index['generic']}, online={appid in index['online']}")
     else:
         # Fallback: HEAD requests if index is unavailable
-        logger.warn(f"MLZ: Fixes index unavailable, falling back to HEAD requests for {appid}")
-        client = ensure_http_client("MLZ: CheckForFixes")
+        logger.warn(f"LuaTools: Fixes index unavailable, falling back to HEAD requests for {appid}")
+        client = ensure_http_client("LuaTools: CheckForFixes")
         try:
-            generic_url = f"https://files.MLZ.work/GameBypasses/{appid}.zip"
+            generic_url = f"https://files.luatools.work/GameBypasses/{appid}.zip"
             resp = client.head(generic_url, follow_redirects=True, timeout=10)
             result["genericFix"]["status"] = resp.status_code
             result["genericFix"]["available"] = resp.status_code == 200
             if resp.status_code == 200:
                 result["genericFix"]["url"] = generic_url
         except Exception as exc:
-            logger.warn(f"MLZ: Generic fix check failed for {appid}: {exc}")
+            logger.warn(f"LuaTools: Generic fix check failed for {appid}: {exc}")
 
         try:
-            online_url = f"https://files.MLZ.work/OnlineFix1/{appid}.zip"
+            online_url = f"https://files.luatools.work/OnlineFix1/{appid}.zip"
             resp = client.head(online_url, follow_redirects=True, timeout=10)
             result["onlineFix"]["status"] = resp.status_code
             result["onlineFix"]["available"] = resp.status_code == 200
             if resp.status_code == 200:
                 result["onlineFix"]["url"] = online_url
         except Exception as exc:
-            logger.warn(f"MLZ: Online-fix check failed for {appid}: {exc}")
+            logger.warn(f"LuaTools: Online-fix check failed for {appid}: {exc}")
 
     return json.dumps(result)
 
 
 def _download_and_extract_fix(appid: int, download_url: str, install_path: str, fix_type: str, game_name: str = ""):
-    client = ensure_http_client("MLZ: fix download")
+    client = ensure_http_client("LuaTools: fix download")
     try:
         dest_root = ensure_temp_download_dir()
         dest_zip = os.path.join(dest_root, f"fix_{appid}.zip")
         _set_fix_download_state(appid, {"status": "downloading", "bytesRead": 0, "totalBytes": 0, "error": None})
 
-        logger.log(f"MLZ: Downloading {fix_type} from {download_url}")
+        logger.log(f"LuaTools: Downloading {fix_type} from {download_url}")
 
         with client.stream("GET", download_url, follow_redirects=True, timeout=30) as resp:
-            logger.log(f"MLZ: Fix download response for {appid}: status={resp.status_code}")
+            logger.log(f"LuaTools: Fix download response for {appid}: status={resp.status_code}")
             resp.raise_for_status()
             total = int(resp.headers.get("Content-Length", "0") or "0")
             _set_fix_download_state(appid, {"totalBytes": total})
@@ -182,16 +182,16 @@ def _download_and_extract_fix(appid: int, download_url: str, install_path: str, 
                         continue
                     state = _get_fix_download_state(appid)
                     if state.get("status") == "cancelled":
-                        logger.log(f"MLZ: Fix download cancelled before writing chunk for {appid}")
+                        logger.log(f"LuaTools: Fix download cancelled before writing chunk for {appid}")
                         raise RuntimeError("cancelled")
                     output.write(chunk)
                     read = int(state.get("bytesRead", 0)) + len(chunk)
                     _set_fix_download_state(appid, {"bytesRead": read})
                     if _get_fix_download_state(appid).get("status") == "cancelled":
-                        logger.log(f"MLZ: Fix download cancelled for {appid}")
+                        logger.log(f"LuaTools: Fix download cancelled for {appid}")
                         raise RuntimeError("cancelled")
 
-        logger.log(f"MLZ: Download complete, extracting to {install_path}")
+        logger.log(f"LuaTools: Download complete, extracting to {install_path}")
         _set_fix_download_state(appid, {"status": "extracting"})
 
         extracted_files = []
@@ -205,11 +205,11 @@ def _download_and_extract_fix(appid: int, download_url: str, install_path: str, 
                 if parts[0]:
                     top_level_entries.add(parts[0])
             if _get_fix_download_state(appid).get("status") == "cancelled":
-                logger.log(f"MLZ: Fix extraction cancelled before start for {appid}")
+                logger.log(f"LuaTools: Fix extraction cancelled before start for {appid}")
                 raise RuntimeError("cancelled")
 
             if len(top_level_entries) == 1 and appid_folder.rstrip("/") in top_level_entries:
-                logger.log(f"MLZ: Found single folder {appid} in zip, extracting its contents")
+                logger.log(f"LuaTools: Found single folder {appid} in zip, extracting its contents")
                 for member in archive.namelist():
                     if member.startswith(appid_folder) and member != appid_folder:
                         target_path = member[len(appid_folder):]
@@ -217,7 +217,7 @@ def _download_and_extract_fix(appid: int, download_url: str, install_path: str, 
                             continue
                         # Validate path doesn't escape install directory (prevent path traversal)
                         if not _is_safe_path(install_path, target_path):
-                            logger.warn(f"MLZ: Skipping potentially unsafe path in zip: {member}")
+                            logger.warn(f"LuaTools: Skipping potentially unsafe path in zip: {member}")
                             continue
                         source = archive.open(member)
                         target = os.path.join(install_path, target_path)
@@ -228,25 +228,25 @@ def _download_and_extract_fix(appid: int, download_url: str, install_path: str, 
                             extracted_files.append(target_path.replace("\\", "/"))
                         source.close()
                         if _get_fix_download_state(appid).get("status") == "cancelled":
-                            logger.log(f"MLZ: Fix extraction cancelled mid-process for {appid}")
+                            logger.log(f"LuaTools: Fix extraction cancelled mid-process for {appid}")
                             raise RuntimeError("cancelled")
             else:
-                logger.log(f"MLZ: Extracting all zip contents to {install_path}")
+                logger.log(f"LuaTools: Extracting all zip contents to {install_path}")
                 for member in archive.namelist():
                     if member.endswith("/"):
                         continue
                     # Validate path doesn't escape install directory (prevent path traversal)
                     if not _is_safe_path(install_path, member):
-                        logger.warn(f"MLZ: Skipping potentially unsafe path in zip: {member}")
+                        logger.warn(f"LuaTools: Skipping potentially unsafe path in zip: {member}")
                         continue
                     archive.extract(member, install_path)
                     extracted_files.append(member.replace("\\", "/"))
                     if _get_fix_download_state(appid).get("status") == "cancelled":
-                        logger.log(f"MLZ: Fix extraction cancelled mid-process for {appid}")
+                        logger.log(f"LuaTools: Fix extraction cancelled mid-process for {appid}")
                         raise RuntimeError("cancelled")
 
         if _get_fix_download_state(appid).get("status") == "cancelled":
-            logger.log(f"MLZ: Fix cancelled after extraction for {appid}")
+            logger.log(f"LuaTools: Fix cancelled after extraction for {appid}")
             raise RuntimeError("cancelled")
 
         ini_relative_path = None
@@ -266,17 +266,17 @@ def _download_and_extract_fix(appid: int, download_url: str, install_path: str, 
                         if updated_contents != contents:
                             with open(ini_full_path, "w", encoding="utf-8") as ini_file:
                                 ini_file.write(updated_contents)
-                            logger.log(f"MLZ: Updated unsteam.ini with appid {appid}")
+                            logger.log(f"LuaTools: Updated unsteam.ini with appid {appid}")
                         else:
-                            logger.log("MLZ: unsteam.ini did not contain <appid> placeholder or was already updated")
+                            logger.log("LuaTools: unsteam.ini did not contain <appid> placeholder or was already updated")
                     else:
-                        logger.warn(f"MLZ: Expected unsteam.ini at {ini_full_path} but file not found")
+                        logger.warn(f"LuaTools: Expected unsteam.ini at {ini_full_path} but file not found")
                 else:
-                    logger.warn("MLZ: Extracted files do not include unsteam.ini for Online Fix (Unsteam)")
+                    logger.warn("LuaTools: Extracted files do not include unsteam.ini for Online Fix (Unsteam)")
             except Exception as exc:
-                logger.warn(f"MLZ: Failed to update unsteam.ini: {exc}")
+                logger.warn(f"LuaTools: Failed to update unsteam.ini: {exc}")
 
-        log_file_path = os.path.join(install_path, f"MLZ-fix-log-{appid}.log")
+        log_file_path = os.path.join(install_path, f"luatools-fix-log-{appid}.log")
         try:
             # Read existing log to preserve previous fixes
             existing_content = ""
@@ -307,11 +307,11 @@ def _download_and_extract_fix(appid: int, download_url: str, install_path: str, 
                     log_file.write(f"{file_path}\n")
                 log_file.write("[/FIX]\n")
 
-            logger.log(f"MLZ: Appended fix log at {log_file_path} with {len(extracted_files)} files")
+            logger.log(f"LuaTools: Appended fix log at {log_file_path} with {len(extracted_files)} files")
         except Exception as exc:
-            logger.warn(f"MLZ: Failed to create fix log file: {exc}")
+            logger.warn(f"LuaTools: Failed to create fix log file: {exc}")
 
-        logger.log(f"MLZ: {fix_type} applied successfully to {install_path}")
+        logger.log(f"LuaTools: {fix_type} applied successfully to {install_path}")
         _set_fix_download_state(appid, {"status": "done", "success": True})
 
         try:
@@ -328,7 +328,7 @@ def _download_and_extract_fix(appid: int, download_url: str, install_path: str, 
                 pass
             _set_fix_download_state(appid, {"status": "cancelled", "success": False, "error": "Cancelled by user"})
             return
-        logger.warn(f"MLZ: Failed to apply fix: {exc}")
+        logger.warn(f"LuaTools: Failed to apply fix: {exc}")
         _set_fix_download_state(appid, {"status": "failed", "error": str(exc)})
 
 
@@ -344,7 +344,7 @@ def apply_game_fix(appid: int, download_url: str, install_path: str, fix_type: s
     if not os.path.exists(install_path):
         return json.dumps({"success": False, "error": "Install path does not exist"})
 
-    logger.log(f"MLZ: ApplyGameFix appid={appid}, fixType={fix_type}")
+    logger.log(f"LuaTools: ApplyGameFix appid={appid}, fixType={fix_type}")
 
     _set_fix_download_state(appid, {"status": "queued", "bytesRead": 0, "totalBytes": 0, "error": None})
     thread = threading.Thread(
@@ -376,14 +376,14 @@ def cancel_apply_fix(appid: int) -> str:
         return json.dumps({"success": True, "message": "Nothing to cancel"})
 
     _set_fix_download_state(appid, {"status": "cancelled", "success": False, "error": "Cancelled by user"})
-    logger.log(f"MLZ: CancelApplyFix requested for appid={appid}")
+    logger.log(f"LuaTools: CancelApplyFix requested for appid={appid}")
     return json.dumps({"success": True})
 
 
 def _unfix_game_worker(appid: int, install_path: str, fix_date: str = None):
     try:
-        logger.log(f"MLZ: Starting un-fix for appid {appid}, fix_date={fix_date}")
-        log_file_path = os.path.join(install_path, f"MLZ-fix-log-{appid}.log")
+        logger.log(f"LuaTools: Starting un-fix for appid {appid}, fix_date={fix_date}")
+        log_file_path = os.path.join(install_path, f"luatools-fix-log-{appid}.log")
 
         if not os.path.exists(log_file_path):
             _set_unfix_state(appid, {"status": "failed", "error": "No fix log found. Cannot un-fix."})
@@ -442,9 +442,9 @@ def _unfix_game_worker(appid: int, install_path: str, fix_date: str = None):
                     elif in_files_section and line:
                         files_to_delete.add(line)
 
-            logger.log(f"MLZ: Found {len(files_to_delete)} unique files to remove from log")
+            logger.log(f"LuaTools: Found {len(files_to_delete)} unique files to remove from log")
         except Exception as exc:
-            logger.warn(f"MLZ: Failed to read log file: {exc}")
+            logger.warn(f"LuaTools: Failed to read log file: {exc}")
             _set_unfix_state(appid, {"status": "failed", "error": f"Failed to read log file: {str(exc)}"})
             return
 
@@ -456,11 +456,11 @@ def _unfix_game_worker(appid: int, install_path: str, fix_date: str = None):
                 if os.path.exists(full_path):
                     os.remove(full_path)
                     deleted_count += 1
-                    logger.log(f"MLZ: Deleted {file_path}")
+                    logger.log(f"LuaTools: Deleted {file_path}")
             except Exception as exc:
-                logger.warn(f"MLZ: Failed to delete {file_path}: {exc}")
+                logger.warn(f"LuaTools: Failed to delete {file_path}: {exc}")
 
-        logger.log(f"MLZ: Deleted {deleted_count}/{len(files_to_delete)} files")
+        logger.log(f"LuaTools: Deleted {deleted_count}/{len(files_to_delete)} files")
 
         # Update or delete the log file
         if remaining_fixes:
@@ -468,21 +468,21 @@ def _unfix_game_worker(appid: int, install_path: str, fix_date: str = None):
             try:
                 with open(log_file_path, "w", encoding="utf-8") as handle:
                     handle.write("\n\n---\n\n".join(remaining_fixes))
-                logger.log(f"MLZ: Updated log file, {len(remaining_fixes)} fixes remaining")
+                logger.log(f"LuaTools: Updated log file, {len(remaining_fixes)} fixes remaining")
             except Exception as exc:
-                logger.warn(f"MLZ: Failed to update log file: {exc}")
+                logger.warn(f"LuaTools: Failed to update log file: {exc}")
         else:
             # No fixes remaining, delete the log file
             try:
                 os.remove(log_file_path)
-                logger.log(f"MLZ: Deleted log file {log_file_path}")
+                logger.log(f"LuaTools: Deleted log file {log_file_path}")
             except Exception as exc:
-                logger.warn(f"MLZ: Failed to delete log file: {exc}")
+                logger.warn(f"LuaTools: Failed to delete log file: {exc}")
 
         _set_unfix_state(appid, {"status": "done", "success": True, "filesRemoved": deleted_count})
 
     except Exception as exc:
-        logger.warn(f"MLZ: Un-fix failed: {exc}")
+        logger.warn(f"LuaTools: Un-fix failed: {exc}")
         _set_unfix_state(appid, {"status": "failed", "error": str(exc)})
 
 
@@ -505,7 +505,7 @@ def unfix_game(appid: int, install_path: str = "", fix_date: str = "") -> str:
     if not os.path.exists(resolved_path):
         return json.dumps({"success": False, "error": "Install path does not exist"})
 
-    logger.log(f"MLZ: UnFixGame appid={appid}, path={resolved_path}, fix_date={fix_date}")
+    logger.log(f"LuaTools: UnFixGame appid={appid}, path={resolved_path}, fix_date={fix_date}")
 
     _set_unfix_state(appid, {"status": "queued", "progress": "", "error": None})
     thread = threading.Thread(target=_unfix_game_worker, args=(appid, resolved_path, fix_date or None), daemon=True)
@@ -525,7 +525,7 @@ def get_unfix_status(appid: int) -> str:
 
 
 def get_installed_fixes() -> str:
-    """Scan all Steam library folders for games with MLZ fix logs."""
+    """Scan all Steam library folders for games with luatools fix logs."""
     try:
         from steam_utils import _find_steam_path, _parse_vdf_simple
 
@@ -542,7 +542,7 @@ def get_installed_fixes() -> str:
                 vdf_content = handle.read()
             library_data = _parse_vdf_simple(vdf_content)
         except Exception as exc:
-            logger.warn(f"MLZ: Failed to parse libraryfolders.vdf: {exc}")
+            logger.warn(f"LuaTools: Failed to parse libraryfolders.vdf: {exc}")
             return json.dumps({"success": False, "error": "Failed to parse libraryfolders.vdf"})
 
         library_folders = library_data.get("libraryfolders", {})
@@ -592,8 +592,8 @@ def get_installed_fixes() -> str:
                         if not os.path.exists(full_install_path):
                             continue
 
-                        # Check for MLZ fix log
-                        log_file_path = os.path.join(full_install_path, f"MLZ-fix-log-{appid}.log")
+                        # Check for luatools fix log
+                        log_file_path = os.path.join(full_install_path, f"luatools-fix-log-{appid}.log")
                         if os.path.exists(log_file_path):
                             # Parse the log file to get fix info (supports multiple fixes)
                             try:
@@ -687,20 +687,20 @@ def get_installed_fixes() -> str:
                                     installed_fixes.append(fix)
 
                             except Exception as exc:
-                                logger.warn(f"MLZ: Failed to parse fix log for {appid}: {exc}")
+                                logger.warn(f"LuaTools: Failed to parse fix log for {appid}: {exc}")
 
                     except Exception as exc:
-                        logger.warn(f"MLZ: Failed to process manifest {filename}: {exc}")
+                        logger.warn(f"LuaTools: Failed to process manifest {filename}: {exc}")
                         continue
 
             except Exception as exc:
-                logger.warn(f"MLZ: Failed to scan library {lib_path}: {exc}")
+                logger.warn(f"LuaTools: Failed to scan library {lib_path}: {exc}")
                 continue
 
         return json.dumps({"success": True, "fixes": installed_fixes})
 
     except Exception as exc:
-        logger.warn(f"MLZ: Failed to get installed fixes: {exc}")
+        logger.warn(f"LuaTools: Failed to get installed fixes: {exc}")
         return json.dumps({"success": False, "error": str(exc)})
 
 

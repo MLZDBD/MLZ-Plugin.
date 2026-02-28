@@ -1,4 +1,4 @@
-"""Shared logger instance for the MLZ plugin backend."""
+"""Shared logger instance for the LuaTools plugin backend."""
 
 import PluginUtils  # type: ignore
 

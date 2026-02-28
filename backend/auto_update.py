@@ -1,4 +1,4 @@
-"""Auto-update utilities for the MLZ backend."""
+"""Auto-update utilities for the LuaTools backend."""
 
 from __future__ import annotations
 
@@ -55,16 +55,16 @@ def apply_pending_update_if_any() -> str:
 
         new_version = str(info.get("version", "")) if isinstance(info, dict) else ""
         if new_version:
-            return f"MLZ updated to {new_version}. Please restart Steam."
-        return "MLZ update applied. Please restart Steam."
+            return f"LuaTools updated to {new_version}. Please restart Steam."
+        return "LuaTools update applied. Please restart Steam."
     except Exception as exc:
         logger.warn(f"AutoUpdate: Failed to apply pending update: {exc}")
         return ""
 
 
 def _fetch_github_latest(cfg: Dict[str, Any]) -> Dict[str, Any]:
-    owner = "MLZ"
-    repo = "MLZ_Plugin"
+    owner = str(cfg.get("owner", "")).strip()
+    repo = str(cfg.get("repo", "")).strip()
     asset_name = str(cfg.get("asset_name", "ltsteamplugin.zip")).strip()
     tag = str(cfg.get("tag", "")).strip()
     tag_prefix = str(cfg.get("tag_prefix", "")).strip()
@@ -81,7 +81,7 @@ def _fetch_github_latest(cfg: Dict[str, Any]) -> Dict[str, Any]:
 
     headers = {
         "Accept": "application/vnd.github+json",
-        "User-Agent": "MLZ-Updater",
+        "User-Agent": "LuaTools-Updater",
     }
     if token:
         headers["Authorization"] = f"Bearer {token}"
@@ -101,7 +101,7 @@ def _fetch_github_latest(cfg: Dict[str, Any]) -> Dict[str, Any]:
     except Exception as api_err:
         logger.warn(f"AutoUpdate: GitHub API failed ({api_err}), trying proxy...")
         try:
-            proxy_url = ""
+            proxy_url = "https://luatools.vercel.app/api/github-latest"
             logger.log(f"AutoUpdate: Fetching GitHub release from proxy {proxy_url}")
             resp = client.get(proxy_url, follow_redirects=True, timeout=15)
             logger.log(f"AutoUpdate: Proxy GitHub API response: status={resp.status_code}")
@@ -128,13 +128,13 @@ def _fetch_github_latest(cfg: Dict[str, Any]) -> Dict[str, Any]:
             for asset in assets:
                 a_name = str(asset.get("name", "")).strip()
                 if a_name == asset_name:
-                    zip_url = ""
+                    zip_url = str(asset.get("browser_download_url", "")).strip()
                     break
     except Exception:
         pass
 
     if not zip_url and tag_name:
-        zip_url = ""
+        zip_url = f"https://luatools.vercel.app/api/get-plugin/{tag_name}"
         logger.log(f"AutoUpdate: Using proxy download URL: {zip_url}")
 
     if not zip_url:
@@ -175,7 +175,7 @@ def check_for_update_once() -> str:
     if isinstance(gh_cfg, dict):
         manifest = _fetch_github_latest(gh_cfg)
         latest_version = str(manifest.get("version", "")).strip()
-        zip_url = ""
+        zip_url = str(manifest.get("zip_url", "")).strip()
     else:
         manifest_url = str(cfg.get("manifest_url", "")).strip()
         if not manifest_url:
@@ -186,7 +186,7 @@ def check_for_update_once() -> str:
             resp.raise_for_status()
             manifest = resp.json()
             latest_version = str(manifest.get("version", "")).strip()
-            zip_url = ""
+            zip_url = str(manifest.get("zip_url", "")).strip()
         except Exception as exc:
             logger.warn(f"AutoUpdate: Failed to fetch manifest: {exc}")
             return ""
@@ -217,7 +217,7 @@ def check_for_update_once() -> str:
         except Exception:
             pass
         logger.log("AutoUpdate: Update extracted; will take effect after restart")
-        return f"MLZ updated to {latest_version}. Please restart Steam."
+        return f"LuaTools updated to {latest_version}. Please restart Steam."
     except Exception as extract_err:
         logger.warn(
             f"AutoUpdate: Extraction failed, will apply on next start: {extract_err}"
@@ -267,17 +267,17 @@ def _check_and_donate_keys() -> None:
         
         steam_path = detect_steam_install_path()
         if not steam_path:
-            logger.warn("MLZ: Cannot donate keys - Steam path not found")
+            logger.warn("LuaTools: Cannot donate keys - Steam path not found")
             return
         
         pairs = extract_valid_decryption_keys(steam_path)
         if pairs:
             send_donation_keys(pairs)
         else:
-            logger.log("MLZ: No valid keys found to donate")
+            logger.log("LuaTools: No valid keys found to donate")
             
     except Exception as exc:
-        logger.warn(f"MLZ: Donate keys check failed: {exc}")
+        logger.warn(f"LuaTools: Donate keys check failed: {exc}")
 
 
 def _start_initial_check_worker():
@@ -312,15 +312,15 @@ def restart_steam_internal() -> bool:
     """Internal helper used to restart Steam via bundled script."""
     script_path = backend_path("restart_steam.cmd")
     if not os.path.exists(script_path):
-        logger.error(f"MLZ: restart script not found: {script_path}")
+        logger.error(f"LuaTools: restart script not found: {script_path}")
         return False
     try:
         CREATE_NO_WINDOW = 0x08000000
         subprocess.Popen(["cmd", "/C", script_path], creationflags=CREATE_NO_WINDOW)
-        logger.log("MLZ: Restart script launched (hidden)")
+        logger.log("LuaTools: Restart script launched (hidden)")
         return True
     except Exception as exc:
-        logger.error(f"MLZ: Failed to launch restart script: {exc}")
+        logger.error(f"LuaTools: Failed to launch restart script: {exc}")
         return False
 
 
@@ -337,7 +337,7 @@ def check_for_updates_now() -> Dict[str, Any]:
             store_last_message(message)
         return {"success": True, "message": message}
     except Exception as exc:
-        logger.warn(f"MLZ: CheckForUpdatesNow failed: {exc}")
+        logger.warn(f"LuaTools: CheckForUpdatesNow failed: {exc}")
         return {"success": False, "error": str(exc)}
 
 

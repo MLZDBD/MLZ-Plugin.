@@ -1,4 +1,4 @@
-"""Management of the MLZ API manifest (free API list)."""
+"""Management of the LuaTools API manifest (free API list)."""
 
 from __future__ import annotations
 
@@ -107,33 +107,33 @@ def store_last_message(message: str) -> None:
 
 def fetch_free_apis_now(content_script_query: str = "") -> str:
     """Force refresh of the free API manifest."""
-    client = ensure_http_client("MLZ: FetchFreeApisNow")
+    client = ensure_http_client("LuaTools: FetchFreeApisNow")
     try:
-        logger.log("MLZ: FetchFreeApisNow invoked")
+        logger.log("LuaTools: FetchFreeApisNow invoked")
         manifest_text = ""
 
         try:
-            logger.log(f"MLZ: Fetching manifest from {API_MANIFEST_URL}")
+            logger.log(f"LuaTools: Fetching manifest from {API_MANIFEST_URL}")
             resp = client.get(API_MANIFEST_URL, follow_redirects=True)
-            logger.log(f"MLZ: Manifest response: status={resp.status_code}")
+            logger.log(f"LuaTools: Manifest response: status={resp.status_code}")
             resp.raise_for_status()
             manifest_text = resp.text
-            logger.log("MLZ: Fetched manifest from primary URL")
+            logger.log("LuaTools: Fetched manifest from primary URL")
         except Exception as primary_err:
-            logger.warn(f"MLZ: Primary manifest URL failed ({primary_err}), trying proxy...")
+            logger.warn(f"LuaTools: Primary manifest URL failed ({primary_err}), trying proxy...")
             try:
-                logger.log(f"MLZ: Fetching manifest from proxy {API_MANIFEST_PROXY_URL}")
+                logger.log(f"LuaTools: Fetching manifest from proxy {API_MANIFEST_PROXY_URL}")
                 resp = client.get(
                     API_MANIFEST_PROXY_URL,
                     follow_redirects=True,
                     timeout=HTTP_PROXY_TIMEOUT_SECONDS,
                 )
-                logger.log(f"MLZ: Proxy manifest response: status={resp.status_code}")
+                logger.log(f"LuaTools: Proxy manifest response: status={resp.status_code}")
                 resp.raise_for_status()
                 manifest_text = resp.text
-                logger.log("MLZ: Fetched manifest from proxy URL")
+                logger.log("LuaTools: Fetched manifest from proxy URL")
             except Exception as proxy_err:
-                logger.warn(f"MLZ: Proxy manifest URL also failed: {proxy_err}")
+                logger.warn(f"LuaTools: Proxy manifest URL also failed: {proxy_err}")
                 return json.dumps(
                     {"success": False, "error": f"Both URLs failed: {primary_err}, {proxy_err}"}
                 )
@@ -151,7 +151,7 @@ def fetch_free_apis_now(content_script_query: str = "") -> str:
 
         return json.dumps({"success": True, "count": count})
     except Exception as exc:
-        logger.warn(f"MLZ: FetchFreeApisNow failed: {exc}")
+        logger.warn(f"LuaTools: FetchFreeApisNow failed: {exc}")
         return json.dumps({"success": False, "error": str(exc)})
 
 
@@ -164,7 +164,7 @@ def load_api_manifest() -> List[Dict[str, Any]]:
     if normalized and normalized != text:
         try:
             write_text(path, normalized)
-            logger.log("MLZ: Normalized api.json")
+            logger.log("LuaTools: Normalized api.json")
         except Exception:
             pass
         text = normalized
@@ -174,7 +174,7 @@ def load_api_manifest() -> List[Dict[str, Any]]:
         apis = data.get("api_list", [])
         return [api for api in apis if api.get("enabled", False)]
     except Exception as exc:
-        logger.error(f"MLZ: Failed to parse api.json: {exc}")
+        logger.error(f"LuaTools: Failed to parse api.json: {exc}")
         return []
 
 
@@ -197,6 +197,6 @@ def get_api_list(content_script_query: str = "") -> str:
 
         return json.dumps({"success": True, "apis": api_names})
     except Exception as exc:
-        logger.error(f"MLZ: Failed to get API list: {exc}")
+        logger.error(f"LuaTools: Failed to get API list: {exc}")
         return json.dumps({"success": False, "error": str(exc), "apis": []})
 
